@@ -2,11 +2,31 @@
 
 Offline Mass Calculator is an offline calculator for neutral molecular formula masses, common positive and negative electrospray ions, theoretical isotope patterns, observed-mass matching, and batch exports. It runs locally in a browser and makes no network requests.
 
-## Use the application
+## Download and run
 
-Open [`dist/offline-mass-calculator.html`](dist/offline-mass-calculator.html) directly in a current browser. No installation, server, account, or internet connection is needed. Enter a neutral formula and optionally a name, then calculate. Select an ion preset or customize the ions; switch between positive and negative mode as needed. Use **Paste batch** or **Import CSV** for a list, review the preview, then append or replace entries. Batch rows require both a name and formula. Export the summary, ion list, metadata JSON, invalid rows, or experimental Skyline target CSV from the results area.
+1. Open the [latest release](https://github.com/IMB-MSP/offline-mass-calculator/releases/latest) and expand **Assets** to see the downloads.
+2. Click **offline-mass-calculator-app.zip**. Unzip it and open the extracted folder.
+3. Double-click **offline-mass-calculator.html**. The calculator opens in your browser and works offline. No installation is needed.
 
-Formula input accepts element symbols and positive integer counts, with nested parentheses (for example, `C6H12O6` or `Ca(OH)2`). Enter neutral formulas only: charge, isotope notation, dot hydrates, and bracketed adducts are not formula syntax. A formula is limited to 500 characters, nesting depth 12, and 10,000 atoms. Batch input is limited to 2 MiB and 2,000 compounds; each row has exactly two fields, name and formula. Names are optional for manual entries and default to the canonical formula.
+If you already have the repository on your computer, open [the standalone HTML file](dist/offline-mass-calculator.html) in your browser.
+
+## Enter compounds
+
+- **Single formula:** Type a neutral formula such as `C8H10N4O2` and click **Calculate**. The name is optional.
+- **Paste batch:** Copy two columns from a spreadsheet (name first, formula second), choose **Paste batch** and paste the rows. You can include or omit the header row.
+- **Import CSV:** Choose **Import CSV** and select a file from your computer. The first row must contain the headers `Name,Formula`. For example:
+
+  ```csv
+  Name,Formula
+  Caffeine,C8H10N4O2
+  Glucose,C6H12O6
+  ```
+
+For either batch option, each compound needs both a name and a formula. Review the preview, then append the valid rows to your list or replace the current list.
+
+Choose positive or negative ion mode and select the ions of interest. From the results, you can export a compound summary, ion list, metadata JSON, invalid rows or an experimental Skyline target CSV.
+
+Formula input accepts element symbols and positive integer counts, with nested parentheses (for example, `C6H12O6` or `Ca(OH)2`). Enter neutral formulas only: charge, isotope notation, dot hydrates, and bracketed adducts are not formula syntax. A formula is limited to 500 characters, nesting depth 12, and 10,000 atoms. Batch input is limited to 2 MiB and 2,000 compounds.
 
 Entries and settings live in memory. Refreshing or closing the page removes entries; **Clear all** also removes them. Export data before closing if you need to keep it. Metadata JSON records calculation settings, reference identifiers, and counts, but does not save or restore a session. Display rounding does not reduce the full numeric precision in exports.
 
