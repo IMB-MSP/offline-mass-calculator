@@ -4,7 +4,7 @@ const version=JSON.parse(fs.readFileSync('package.json','utf8')).version;
 const digest=s=>createHash('sha256').update(s).digest('base64');
 const files=['data/atomic-masses.js','data/adduct-definitions.js','src/formula-parser.js','src/mass-engine.js','src/adduct-engine.js','src/isotope-engine.js','src/csv-handler.js','src/skyline-export.js','src/batch.js','src/ion-options.js','src/app.js'];
 const js=`const APP_VERSION=${JSON.stringify(version)};\n`+files.map(f=>fs.readFileSync(f,'utf8').replace(/import\s+\{[^}]*\}\s+from\s+['"][^'"]+['"];?/g,'').replace(/^export /gm,'')).join('\n');
-let html=fs.readFileSync('index.html','utf8').replace('/* STYLES */',()=>fs.readFileSync('styles.css','utf8')).replace('/* SCRIPT */',()=>js.replaceAll('</script','<\\/script'));
+let html=fs.readFileSync('index.html','utf8').replace('{{APP_VERSION}}',()=>version).replace('/* STYLES */',()=>fs.readFileSync('styles.css','utf8')).replace('/* SCRIPT */',()=>js.replaceAll('</script','<\\/script'));
 const script=html.match(/<script type="module">([\s\S]*)<\/script>/)[1];
 const style=html.match(/<style>([\s\S]*?)<\/style>/)[1];
 html=html.replace("script-src 'none'",`script-src 'sha256-${digest(script)}'`).replace("style-src 'none'",`style-src 'sha256-${digest(style)}'`);
