@@ -1,0 +1,2840 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-qLKJu7J9zFZOKlFIRiDHCWS01jQu8rBDlAW0rY0vCMQ='; style-src 'sha256-AiNzqAoZ1p9KHbctNu89T4iXATme3UThGQtP1Mrckrk='; img-src data:; connect-src 'none'; font-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Offline Mass Calculator</title>
+  <style>:root{color-scheme:light;--bg:#f6f8f9;--card:#fff;--text:#19323d;--muted:#5d7079;--border:#dce4e7;--accent:#087d7b;--tint:#eaf5f3}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body.dark{color-scheme:dark;--bg:#10212a;--card:#172e39;--text:#e4eff3;--muted:#a1b6bf;--border:#35505d;--accent:#65d7c4;--tint:#25483f}
+header,main{max-width:1320px;margin:auto;padding:20px 28px}
+header{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-bottom:16px}
+h1{font-size:25px;letter-spacing:-.6px;margin:0;font-weight:650}header p{font-size:12px;color:var(--muted);margin:3px 0 0}
+.badge{font-size:10px;font-weight:600;vertical-align:middle;letter-spacing:.4px;background:var(--tint);padding:3px 7px;border-radius:4px;margin-left:7px;color:var(--accent)}
+.header-actions,.polarity{display:flex;align-items:center;gap:6px}.header-actions{flex-wrap:wrap;justify-content:flex-end;gap:10px}.polarity{gap:0;border:1px solid var(--border);border-radius:6px;overflow:hidden}.polarity button{border:0;border-radius:0;padding:6px 10px}.polarity .active{background:var(--tint);color:var(--accent)}
+main{padding-top:0}.workspace{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:18px 20px}
+h2{font-size:17px;margin:0;font-weight:650}button,input,select,textarea{font:inherit;border:1px solid var(--border);border-radius:5px;padding:7px 10px;color:var(--text);background:var(--card);max-width:100%}
+button{cursor:pointer;font-size:13px;font-weight:550;white-space:nowrap;min-height:34px}button:hover{background:var(--tint);border-color:var(--accent)}button.primary{background:#087d7b;color:#fff;border-color:#087d7b;padding:8px 22px}button.quiet{background:transparent;border-color:transparent;color:var(--accent);padding:5px 7px}button.quiet:hover{background:var(--tint)}button:disabled{opacity:.5;cursor:default}
+input,select,textarea{display:block;width:100%;margin-top:4px;min-width:0}textarea{resize:vertical;min-height:90px}label{font-size:12px;color:var(--muted);font-weight:600;min-width:0}.optional{font-weight:400;margin-left:4px}input[type=checkbox]{width:auto;display:inline;margin:0 7px 0 0;accent-color:#087d7b}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}[aria-invalid=true]{border-color:#ba472c}
+#single{display:grid;grid-template-columns:minmax(160px,1fr) minmax(180px,1.4fr) auto;gap:14px;align-items:start}#single>button{margin-top:22px}#formula{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}
+.entry-actions,.inline-actions,.ion-bar,.settings,.toolbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.entry-actions{margin-top:8px;gap:7px}.entry-actions #samples{margin-left:auto}.inline-actions{margin-top:12px;align-items:end}.ion-bar{border-top:1px solid var(--border);padding-top:12px;margin-top:12px;gap:12px}.inline-label{display:flex;align-items:center;gap:9px}.inline-label select{width:auto;margin:0}.ion-bar #customise{margin-left:auto}
+.hint,footer{font-size:12px;color:var(--muted)}.field-error{display:block;font-size:12px;color:#b64027;font-weight:400;margin-top:3px}.field-error:empty{display:none}.dark .field-error,.dark .error{color:#ffa68f}
+[hidden]{display:none!important}.disclosure-body{padding:14px 0 4px}.ion-groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px}.ion-groups fieldset{border:0;padding:0;margin:0;min-width:0}.ion-groups legend{font-size:12px;font-weight:650;color:var(--muted);margin-bottom:7px}.ion-groups label{display:flex;align-items:center;color:var(--text);font-size:13px;font-weight:400;padding:5px 0}
+summary{cursor:pointer;font-size:13px;font-weight:600;min-height:34px;padding:7px 0}summary span{font-weight:400;color:var(--muted);margin-left:5px}#advanced{margin-top:8px}#advanced summary{color:var(--muted)}.settings{align-items:end}.settings input{max-width:190px}.settings p{flex-basis:100%;margin:0}
+#status{font-size:12px;margin:0}#status:not(:empty){padding-top:8px;color:var(--accent)}
+.results-section{margin-top:24px}.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}.section-head>span{font-size:12px;color:var(--muted)}.toolbar{align-items:end;margin:12px 0;gap:12px}.toolbar .tabs{margin-right:auto}.toolbar input{max-width:210px}.tabs{display:flex;gap:3px}.tabs button{background:transparent;border-color:transparent;font-size:13px}.tabs button.active{background:var(--tint);color:var(--accent)}
+.table-wrap{overflow:auto;max-height:440px;border:1px solid var(--border);border-radius:6px;background:var(--card)}.table-wrap:empty{display:none}table{border-collapse:collapse;width:100%;font-size:12px;white-space:nowrap}th,td{padding:9px 12px;border-bottom:1px solid var(--border);text-align:left}th{background:var(--bg);color:var(--muted);position:sticky;top:0;font-weight:600;z-index:1}tbody tr:last-child td{border-bottom:0}th.number,td.number{text-align:right}td.number{font-variant-numeric:tabular-nums;font-family:ui-monospace,SFMono-Regular,Consolas,monospace}tbody tr:hover,tr.selected{background:var(--tint)}td button{padding:0 4px;min-height:24px;border:0;color:var(--accent);background:none;text-decoration:underline;text-underline-offset:3px}.table-wrap>p{padding:8px 12px}
+.pagination{display:flex;justify-content:center;align-items:center;gap:16px;margin:10px}.pagination button{font-size:12px;padding:4px 9px}.exports{display:flex;flex-wrap:wrap;align-items:center;gap:7px;padding-top:12px}.exports button{font-size:12px;background:var(--card);padding:5px 8px}.exports>span{margin-right:3px}
+.metrics{display:flex;flex-wrap:wrap;gap:18px 32px;padding:6px 0 16px}.metric strong{display:block;font-size:23px;font-weight:600;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.metric span{font-size:12px;color:var(--muted)}.metric:first-child strong{font-size:19px;padding-top:4px}.metrics p{flex-basis:100%;margin:0}
+.detail-section{border-top:1px solid var(--border);margin-top:22px;padding-top:6px}.detail-section>summary{font-size:14px}.detail-body{padding:12px 0}.detail-body>#compoundLabel{display:block;max-width:420px;margin-bottom:12px}#spectrum{margin-top:14px}svg{width:100%;height:auto;max-height:300px;background:var(--card);border:1px solid var(--border);border-radius:6px}svg text{fill:var(--muted);font:12px sans-serif}svg line{stroke:var(--accent)}.error{color:#b64027}.ok{color:var(--accent)}.peak-details{margin-top:10px}footer{padding:24px 0 8px;line-height:1.7}#ionErrors:empty{display:none}
+@media(max-width:760px){header,main{padding-left:16px;padding-right:16px}header{align-items:start;flex-wrap:wrap;padding-top:16px}.header-actions{justify-content:flex-start;gap:6px}h1{font-size:23px}.workspace{padding:14px}#single{grid-template-columns:1fr 1fr}#single>button{grid-column:1/-1;margin:0}.entry-actions #samples{margin-left:0}.entry-actions #csvHint{flex-basis:100%;order:3}.ion-bar{gap:7px}.ion-bar #customise{margin-left:0}.ion-bar #ionSummary{flex-basis:100%;order:3}.inline-label{flex-wrap:wrap}.toolbar .tabs{flex-basis:100%}.toolbar label{flex:1;min-width:130px}.toolbar input{max-width:none}.section-head{flex-wrap:wrap}.metrics{gap:12px 20px}.metric strong{font-size:20px}.exports>span{flex-basis:100%}.settings label{flex:1;min-width:130px}}
+@media(max-width:460px){#single{grid-template-columns:1fr}.ion-groups{grid-template-columns:1fr}.header-actions #negativeNote{font-size:11px}.header-actions #theme{margin-left:auto}.header-actions{width:100%}.inline-label select{max-width:100%}.metrics .metric{flex:1 1 130px}.metric:first-child{flex-basis:100%}.settings input{max-width:none}}
+
+#resultsHeading{min-width:0;overflow-wrap:anywhere}.section-head>span{flex-shrink:0}
+
+.comparison{margin:14px 0;padding:12px 14px;border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:5px;background:var(--card);overflow-wrap:anywhere}.comparison strong,.comparison span{display:block}.comparison strong{margin-bottom:4px}.comparison.error{border-left-color:#b64027}.comparison span:not(.hint){color:var(--text)}
+
+.input-heading{margin:0 0 12px;font-size:17px}
+
+.input-title{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}.input-title .input-heading{margin:0}
+.help-wrap{position:relative}.quick-help{position:absolute;right:0;top:100%;z-index:10;width:320px;max-width:calc(100vw - 40px);padding:14px 16px;background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:7px;box-shadow:0 5px 18px #163b4620;text-align:left;font-size:12px;line-height:1.6}.quick-help ol{padding-left:18px;margin:8px 0}.quick-help p{margin:8px 0 0;color:var(--muted)}
+@media(max-width:760px){.quick-help{left:0;right:auto}}
+</style>
+</head>
+<body>
+<header>
+  <div><h1>Offline Mass Calculator</h1><p><em>Small-molecule, ion and isotope calculations.</em></p></div>
+  <div class="header-actions">
+    <div id="helpWrap" class="help-wrap">
+      <button id="helpButton" class="quiet" aria-expanded="false" aria-controls="quickHelp">Help</button>
+      <div id="quickHelp" class="quick-help" hidden>
+        <strong>Quick start</strong>
+        <ol><li>Enter a formula, then Calculate. Names are optional.</li><li>Use Paste batch or Import CSV for a list.</li><li>Choose ESI + or ESI − and an ion preset.</li><li>Open Advanced settings for tolerance and decimals.</li><li>Inspect isotopes or enter observed m/z below results.</li><li>Export before Clear all or closing the page.</li></ol>
+        <p>Clear all removes entries and results; your ion settings stay.</p>
+      </div>
+    </div>
+    <div class="polarity" role="group" aria-label="ESI polarity">
+      <button id="positive" class="active" aria-pressed="true">ESI +</button>
+      <button id="negative" aria-pressed="false">ESI −</button>
+    </div>
+    
+    <button id="theme" class="quiet" aria-label="Toggle dark theme">◐ Theme</button>
+  </div>
+</header>
+<main>
+  <section class="workspace" aria-labelledby="inputHeading">
+    <div class="input-title"><h2 id="inputHeading" class="input-heading">Compound input</h2><button id="clearAll" class="quiet" title="Remove all compounds, drafts and results. Keep ion settings.">Clear all</button></div>
+    <form id="single" novalidate>
+      <label>Compound name <span class="optional">optional</span><input id="name" placeholder="e.g. Caffeine" maxlength="300" aria-describedby="nameError"><span id="nameError" class="field-error" aria-live="polite"></span></label>
+      <label>Molecular formula<input id="formula" placeholder="e.g. C8H10N4O2" required maxlength="500" spellcheck="false" autocapitalize="off" autocomplete="off" aria-describedby="formulaError"><span id="formulaError" class="field-error" aria-live="polite"></span></label>
+      <button class="primary" type="submit">Calculate</button>
+    </form>
+    <div class="entry-actions">
+      <button id="toggleBatch" class="quiet" aria-expanded="false" aria-controls="paste">Paste batch</button>
+      <button id="importCSV" class="quiet" aria-describedby="csvHint">Import CSV</button>
+      <input id="upload" type="file" accept=".csv,text/csv" hidden aria-label="Import local CSV">
+      <span id="csvHint" class="hint">Name,Formula · max 2 MiB</span>
+      <button id="samples" class="quiet">Load examples</button>
+    </div>
+    <div id="paste" class="disclosure-body" hidden>
+      <label>Paste Name and Formula columns<textarea id="batch" rows="4" placeholder="Name&#9;Formula&#10;Caffeine&#9;C8H10N4O2&#10;Glucose&#9;C6H12O6" aria-describedby="batchHint"></textarea></label>
+      <div class="inline-actions"><button id="previewPaste">Preview import</button><span id="batchHint" class="hint">Excel/Sheets columns or CSV. Optional header; duplicates are preserved.</span></div>
+    </div>
+    <div id="preview" class="disclosure-body" hidden>
+      <h2>Import preview</h2><p id="previewCount"></p><div id="previewTable" class="table-wrap"></div>
+      <div class="inline-actions"><label>Apply as<select id="importMode"><option value="append">Append to current compounds</option><option value="replace">Replace current compounds</option></select></label><button id="apply" class="primary">Apply valid rows</button><button id="cancel">Cancel</button><button id="previewInvalid" hidden>Download invalid rows</button></div>
+    </div>
+    <p id="status" role="status" aria-live="polite"></p>
+    <div class="ion-bar">
+      <label class="inline-label">Ion selection<select id="ionPreset"><option value="common">Common positive ESI</option><option value="protonated">Protonated only</option><option value="all">All available ions</option><option value="custom">Custom</option></select></label>
+      <span id="ionSummary" class="hint" aria-live="polite"></span>
+      <button id="customise" class="quiet" aria-expanded="false" aria-controls="customIons">Customise ions</button>
+    </div>
+    <div id="customIons" class="disclosure-body" hidden>
+      <div id="adducts" class="ion-groups"></div>
+      <p class="hint">Neutral-loss candidates are possible compositions, not predicted fragments. Calculated ions may not be observable.</p>
+    </div>
+    <details id="advanced">
+      <summary>Advanced settings <span id="settingsSummary">· 5 ppm · 5 decimals</span></summary>
+      <div class="settings disclosure-body">
+        <label>XIC tolerance ±<input id="tolerance" type="number" min="0" max="1000000" step="any" value="5" aria-describedby="settingsError"></label>
+        <label>Unit<select id="unit"><option>ppm</option><option>Da</option></select></label>
+        <label>Display decimals<select id="precision"><option>4</option><option selected>5</option><option>6</option><option>7</option><option>8</option></select></label>
+        <p id="settingsError" class="field-error" role="status"></p>
+      </div>
+    </details>
+  </section>
+
+  <section id="resultsSection" class="results-section" hidden aria-label="Calculated results">
+    <div class="section-head"><h2 id="resultsHeading" tabindex="-1">Mass Calculations</h2><span><span id="counts">0 compounds</span> · <span id="ionCount">0 calculated ions</span></span></div>
+    <div id="singleInfo" class="metrics" hidden></div>
+    <div id="batchToolbar" class="toolbar" hidden>
+      <div class="tabs" role="group" aria-label="Results view"><button id="summaryTab" class="active" aria-pressed="true">Compound summary</button><button id="ionsTab" aria-pressed="false">Expanded ions</button></div>
+      <label>Search compounds<input id="search" type="search" placeholder="Name, formula or ID"></label>
+      <label id="ionFilterLabel" hidden>Ion filter<select id="ionFilter"><option value="">All selected ions</option></select></label>
+      <label>Sort<select id="sort"><option value="input">Input order</option><option value="name">Name A–Z</option><option value="mass">Neutral mass ↑</option></select></label>
+    </div>
+    <p id="noIons" class="hint" hidden>No ions selected. Choose a preset or customise ions above.</p>
+    <div id="results" class="table-wrap"></div>
+    <div id="pagination" class="pagination" hidden><button id="previous">← Previous</button><span id="page"></span><button id="next">Next →</button></div>
+    <p id="ionErrors" class="hint"></p>
+    <div class="exports" role="group" aria-label="Export complete results"><span class="hint">Export all</span><button id="downloadSummary">Summary CSV</button><button id="downloadIons">Ion-list CSV</button><button id="skyline">Skyline targets (work in progress)</button><button id="copySummary">Copy summary</button><button id="copyIons">Copy ions</button><button id="invalid" hidden>Invalid-row report</button><button id="metadata">Metadata JSON</button></div>
+  </section>
+
+  <details id="detail" class="detail-section" hidden>
+    <summary>Inspect isotopes &amp; observed m/z <span id="detailName"></span></summary>
+    <div class="detail-body">
+      <label id="compoundLabel">Compound<select id="compoundSelect"></select></label>
+      <div id="detailInfo" class="metrics"></div>
+      <div class="settings"><label>Selected ion<select id="detailIon"></select></label><label>Isotope representation<select id="representation"><option value="exact">Exact-mass fine structure</option><option value="nominal">Nominal M / M+1 / M+2</option></select></label><label>Observed m/z<input id="observed" type="number" min="0" step="any" placeholder="e.g. 203.05261" aria-describedby="match"></label></div>
+      <div id="match" class="comparison" role="status" aria-live="polite" aria-atomic="true"></div><div id="spectrum"></div><p id="isotopeNote" class="hint"></p>
+      <details class="peak-details"><summary>Isotope peak values</summary><div id="isotopeTable" class="table-wrap"></div></details>
+    </div>
+  </details>
+  <footer>Local calculations · No data transmission<br>Average masses use NIST standard weights (interval midpoints where applicable). Mass agreement alone does not establish chemical identity.</footer>
+</main>
+<script type="module">const APP_VERSION="1.2.0";
+// NIST Atomic Weights and Isotopic Compositions, frozen retrieval 2026-11-05.
+const REFERENCE_VERSION='NIST-compositions-2026-11-05';
+const ELECTRON_MASS=0.000548579909065; // CODATA 2018, u
+const ELEMENTS={
+  "H": {
+    "isotopes": [
+      {
+        "number": 1,
+        "mass": 1.00782503223,
+        "abundance": 0.999885
+      },
+      {
+        "number": 2,
+        "mass": 2.01410177812,
+        "abundance": 0.000115
+      }
+    ],
+    "average": 1.007975,
+    "weightInterval": [
+      1.00784,
+      1.00811
+    ],
+    "mono": 1.00782503223
+  },
+  "He": {
+    "isotopes": [
+      {
+        "number": 3,
+        "mass": 3.0160293201,
+        "abundance": 0.00000134
+      },
+      {
+        "number": 4,
+        "mass": 4.00260325413,
+        "abundance": 0.99999866
+      }
+    ],
+    "average": 4.002602,
+    "weightInterval": null,
+    "mono": 4.00260325413
+  },
+  "Li": {
+    "isotopes": [
+      {
+        "number": 6,
+        "mass": 6.0151228874,
+        "abundance": 0.0759
+      },
+      {
+        "number": 7,
+        "mass": 7.0160034366,
+        "abundance": 0.9241
+      }
+    ],
+    "average": 6.967499999999999,
+    "weightInterval": [
+      6.938,
+      6.997
+    ],
+    "mono": 7.0160034366
+  },
+  "Be": {
+    "isotopes": [
+      {
+        "number": 9,
+        "mass": 9.012183065,
+        "abundance": 1
+      }
+    ],
+    "average": 9.0121831,
+    "weightInterval": null,
+    "mono": 9.012183065
+  },
+  "B": {
+    "isotopes": [
+      {
+        "number": 10,
+        "mass": 10.01293695,
+        "abundance": 0.199
+      },
+      {
+        "number": 11,
+        "mass": 11.00930536,
+        "abundance": 0.801
+      }
+    ],
+    "average": 10.8135,
+    "weightInterval": [
+      10.806,
+      10.821
+    ],
+    "mono": 11.00930536
+  },
+  "C": {
+    "isotopes": [
+      {
+        "number": 12,
+        "mass": 12,
+        "abundance": 0.9893
+      },
+      {
+        "number": 13,
+        "mass": 13.00335483507,
+        "abundance": 0.0107
+      }
+    ],
+    "average": 12.0106,
+    "weightInterval": [
+      12.0096,
+      12.0116
+    ],
+    "mono": 12
+  },
+  "N": {
+    "isotopes": [
+      {
+        "number": 14,
+        "mass": 14.00307400443,
+        "abundance": 0.99636
+      },
+      {
+        "number": 15,
+        "mass": 15.00010889888,
+        "abundance": 0.00364
+      }
+    ],
+    "average": 14.006855,
+    "weightInterval": [
+      14.00643,
+      14.00728
+    ],
+    "mono": 14.00307400443
+  },
+  "O": {
+    "isotopes": [
+      {
+        "number": 16,
+        "mass": 15.99491461957,
+        "abundance": 0.99757
+      },
+      {
+        "number": 17,
+        "mass": 16.9991317565,
+        "abundance": 0.00038
+      },
+      {
+        "number": 18,
+        "mass": 17.99915961286,
+        "abundance": 0.00205
+      }
+    ],
+    "average": 15.9994,
+    "weightInterval": [
+      15.99903,
+      15.99977
+    ],
+    "mono": 15.99491461957
+  },
+  "F": {
+    "isotopes": [
+      {
+        "number": 19,
+        "mass": 18.99840316273,
+        "abundance": 1
+      }
+    ],
+    "average": 18.998403163,
+    "weightInterval": null,
+    "mono": 18.99840316273
+  },
+  "Ne": {
+    "isotopes": [
+      {
+        "number": 20,
+        "mass": 19.9924401762,
+        "abundance": 0.9048
+      },
+      {
+        "number": 21,
+        "mass": 20.993846685,
+        "abundance": 0.0027
+      },
+      {
+        "number": 22,
+        "mass": 21.991385114,
+        "abundance": 0.0925
+      }
+    ],
+    "average": 20.1797,
+    "weightInterval": null,
+    "mono": 19.9924401762
+  },
+  "Na": {
+    "isotopes": [
+      {
+        "number": 23,
+        "mass": 22.989769282,
+        "abundance": 1
+      }
+    ],
+    "average": 22.98976928,
+    "weightInterval": null,
+    "mono": 22.989769282
+  },
+  "Mg": {
+    "isotopes": [
+      {
+        "number": 24,
+        "mass": 23.985041697,
+        "abundance": 0.7899
+      },
+      {
+        "number": 25,
+        "mass": 24.985836976,
+        "abundance": 0.1
+      },
+      {
+        "number": 26,
+        "mass": 25.982592968,
+        "abundance": 0.1101
+      }
+    ],
+    "average": 24.3055,
+    "weightInterval": [
+      24.304,
+      24.307
+    ],
+    "mono": 23.985041697
+  },
+  "Al": {
+    "isotopes": [
+      {
+        "number": 27,
+        "mass": 26.98153853,
+        "abundance": 1
+      }
+    ],
+    "average": 26.9815385,
+    "weightInterval": null,
+    "mono": 26.98153853
+  },
+  "Si": {
+    "isotopes": [
+      {
+        "number": 28,
+        "mass": 27.97692653465,
+        "abundance": 0.92223
+      },
+      {
+        "number": 29,
+        "mass": 28.9764946649,
+        "abundance": 0.04685
+      },
+      {
+        "number": 30,
+        "mass": 29.973770136,
+        "abundance": 0.03092
+      }
+    ],
+    "average": 28.085,
+    "weightInterval": [
+      28.084,
+      28.086
+    ],
+    "mono": 27.97692653465
+  },
+  "P": {
+    "isotopes": [
+      {
+        "number": 31,
+        "mass": 30.97376199842,
+        "abundance": 1
+      }
+    ],
+    "average": 30.973761998,
+    "weightInterval": null,
+    "mono": 30.97376199842
+  },
+  "S": {
+    "isotopes": [
+      {
+        "number": 32,
+        "mass": 31.9720711744,
+        "abundance": 0.9499
+      },
+      {
+        "number": 33,
+        "mass": 32.9714589098,
+        "abundance": 0.0075
+      },
+      {
+        "number": 34,
+        "mass": 33.967867004,
+        "abundance": 0.0425
+      },
+      {
+        "number": 36,
+        "mass": 35.96708071,
+        "abundance": 0.0001
+      }
+    ],
+    "average": 32.067499999999995,
+    "weightInterval": [
+      32.059,
+      32.076
+    ],
+    "mono": 31.9720711744
+  },
+  "Cl": {
+    "isotopes": [
+      {
+        "number": 35,
+        "mass": 34.968852682,
+        "abundance": 0.7576
+      },
+      {
+        "number": 37,
+        "mass": 36.965902602,
+        "abundance": 0.2424
+      }
+    ],
+    "average": 35.451499999999996,
+    "weightInterval": [
+      35.446,
+      35.457
+    ],
+    "mono": 34.968852682
+  },
+  "Ar": {
+    "isotopes": [
+      {
+        "number": 36,
+        "mass": 35.967545105,
+        "abundance": 0.003336
+      },
+      {
+        "number": 38,
+        "mass": 37.96273211,
+        "abundance": 0.000629
+      },
+      {
+        "number": 40,
+        "mass": 39.9623831237,
+        "abundance": 0.996035
+      }
+    ],
+    "average": 39.948,
+    "weightInterval": null,
+    "mono": 39.9623831237
+  },
+  "K": {
+    "isotopes": [
+      {
+        "number": 39,
+        "mass": 38.9637064864,
+        "abundance": 0.932581
+      },
+      {
+        "number": 40,
+        "mass": 39.963998166,
+        "abundance": 0.000117
+      },
+      {
+        "number": 41,
+        "mass": 40.9618252579,
+        "abundance": 0.067302
+      }
+    ],
+    "average": 39.0983,
+    "weightInterval": null,
+    "mono": 38.9637064864
+  },
+  "Ca": {
+    "isotopes": [
+      {
+        "number": 40,
+        "mass": 39.962590863,
+        "abundance": 0.96941
+      },
+      {
+        "number": 42,
+        "mass": 41.95861783,
+        "abundance": 0.00647
+      },
+      {
+        "number": 43,
+        "mass": 42.95876644,
+        "abundance": 0.00135
+      },
+      {
+        "number": 44,
+        "mass": 43.95548156,
+        "abundance": 0.02086
+      },
+      {
+        "number": 46,
+        "mass": 45.953689,
+        "abundance": 0.00004
+      },
+      {
+        "number": 48,
+        "mass": 47.95252276,
+        "abundance": 0.00187
+      }
+    ],
+    "average": 40.078,
+    "weightInterval": null,
+    "mono": 39.962590863
+  },
+  "Sc": {
+    "isotopes": [
+      {
+        "number": 45,
+        "mass": 44.95590828,
+        "abundance": 1
+      }
+    ],
+    "average": 44.955908,
+    "weightInterval": null,
+    "mono": 44.95590828
+  },
+  "Ti": {
+    "isotopes": [
+      {
+        "number": 46,
+        "mass": 45.95262772,
+        "abundance": 0.0825
+      },
+      {
+        "number": 47,
+        "mass": 46.95175879,
+        "abundance": 0.0744
+      },
+      {
+        "number": 48,
+        "mass": 47.94794198,
+        "abundance": 0.7372
+      },
+      {
+        "number": 49,
+        "mass": 48.94786568,
+        "abundance": 0.0541
+      },
+      {
+        "number": 50,
+        "mass": 49.94478689,
+        "abundance": 0.0518
+      }
+    ],
+    "average": 47.867,
+    "weightInterval": null,
+    "mono": 47.94794198
+  },
+  "V": {
+    "isotopes": [
+      {
+        "number": 50,
+        "mass": 49.94715601,
+        "abundance": 0.0025
+      },
+      {
+        "number": 51,
+        "mass": 50.94395704,
+        "abundance": 0.9975
+      }
+    ],
+    "average": 50.9415,
+    "weightInterval": null,
+    "mono": 50.94395704
+  },
+  "Cr": {
+    "isotopes": [
+      {
+        "number": 50,
+        "mass": 49.94604183,
+        "abundance": 0.04345
+      },
+      {
+        "number": 52,
+        "mass": 51.94050623,
+        "abundance": 0.83789
+      },
+      {
+        "number": 53,
+        "mass": 52.94064815,
+        "abundance": 0.09501
+      },
+      {
+        "number": 54,
+        "mass": 53.93887916,
+        "abundance": 0.02365
+      }
+    ],
+    "average": 51.9961,
+    "weightInterval": null,
+    "mono": 51.94050623
+  },
+  "Mn": {
+    "isotopes": [
+      {
+        "number": 55,
+        "mass": 54.93804391,
+        "abundance": 1
+      }
+    ],
+    "average": 54.938044,
+    "weightInterval": null,
+    "mono": 54.93804391
+  },
+  "Fe": {
+    "isotopes": [
+      {
+        "number": 54,
+        "mass": 53.93960899,
+        "abundance": 0.05845
+      },
+      {
+        "number": 56,
+        "mass": 55.93493633,
+        "abundance": 0.91754
+      },
+      {
+        "number": 57,
+        "mass": 56.93539284,
+        "abundance": 0.02119
+      },
+      {
+        "number": 58,
+        "mass": 57.93327443,
+        "abundance": 0.00282
+      }
+    ],
+    "average": 55.845,
+    "weightInterval": null,
+    "mono": 55.93493633
+  },
+  "Co": {
+    "isotopes": [
+      {
+        "number": 59,
+        "mass": 58.93319429,
+        "abundance": 1
+      }
+    ],
+    "average": 58.933194,
+    "weightInterval": null,
+    "mono": 58.93319429
+  },
+  "Ni": {
+    "isotopes": [
+      {
+        "number": 58,
+        "mass": 57.93534241,
+        "abundance": 0.68077
+      },
+      {
+        "number": 60,
+        "mass": 59.93078588,
+        "abundance": 0.26223
+      },
+      {
+        "number": 61,
+        "mass": 60.93105557,
+        "abundance": 0.011399
+      },
+      {
+        "number": 62,
+        "mass": 61.92834537,
+        "abundance": 0.036346
+      },
+      {
+        "number": 64,
+        "mass": 63.92796682,
+        "abundance": 0.009255
+      }
+    ],
+    "average": 58.6934,
+    "weightInterval": null,
+    "mono": 57.93534241
+  },
+  "Cu": {
+    "isotopes": [
+      {
+        "number": 63,
+        "mass": 62.92959772,
+        "abundance": 0.6915
+      },
+      {
+        "number": 65,
+        "mass": 64.9277897,
+        "abundance": 0.3085
+      }
+    ],
+    "average": 63.546,
+    "weightInterval": null,
+    "mono": 62.92959772
+  },
+  "Zn": {
+    "isotopes": [
+      {
+        "number": 64,
+        "mass": 63.92914201,
+        "abundance": 0.4917
+      },
+      {
+        "number": 66,
+        "mass": 65.92603381,
+        "abundance": 0.2773
+      },
+      {
+        "number": 67,
+        "mass": 66.92712775,
+        "abundance": 0.0404
+      },
+      {
+        "number": 68,
+        "mass": 67.92484455,
+        "abundance": 0.1845
+      },
+      {
+        "number": 70,
+        "mass": 69.9253192,
+        "abundance": 0.0061
+      }
+    ],
+    "average": 65.38,
+    "weightInterval": null,
+    "mono": 63.92914201
+  },
+  "Ga": {
+    "isotopes": [
+      {
+        "number": 69,
+        "mass": 68.9255735,
+        "abundance": 0.60108
+      },
+      {
+        "number": 71,
+        "mass": 70.92470258,
+        "abundance": 0.39892
+      }
+    ],
+    "average": 69.723,
+    "weightInterval": null,
+    "mono": 68.9255735
+  },
+  "Ge": {
+    "isotopes": [
+      {
+        "number": 70,
+        "mass": 69.92424875,
+        "abundance": 0.2057
+      },
+      {
+        "number": 72,
+        "mass": 71.922075826,
+        "abundance": 0.2745
+      },
+      {
+        "number": 73,
+        "mass": 72.923458956,
+        "abundance": 0.0775
+      },
+      {
+        "number": 74,
+        "mass": 73.921177761,
+        "abundance": 0.365
+      },
+      {
+        "number": 76,
+        "mass": 75.921402726,
+        "abundance": 0.0773
+      }
+    ],
+    "average": 72.63,
+    "weightInterval": null,
+    "mono": 73.921177761
+  },
+  "As": {
+    "isotopes": [
+      {
+        "number": 75,
+        "mass": 74.92159457,
+        "abundance": 1
+      }
+    ],
+    "average": 74.921595,
+    "weightInterval": null,
+    "mono": 74.92159457
+  },
+  "Se": {
+    "isotopes": [
+      {
+        "number": 74,
+        "mass": 73.922475934,
+        "abundance": 0.0089
+      },
+      {
+        "number": 76,
+        "mass": 75.919213704,
+        "abundance": 0.0937
+      },
+      {
+        "number": 77,
+        "mass": 76.919914154,
+        "abundance": 0.0763
+      },
+      {
+        "number": 78,
+        "mass": 77.91730928,
+        "abundance": 0.2377
+      },
+      {
+        "number": 80,
+        "mass": 79.9165218,
+        "abundance": 0.4961
+      },
+      {
+        "number": 82,
+        "mass": 81.9166995,
+        "abundance": 0.0873
+      }
+    ],
+    "average": 78.971,
+    "weightInterval": null,
+    "mono": 79.9165218
+  },
+  "Br": {
+    "isotopes": [
+      {
+        "number": 79,
+        "mass": 78.9183376,
+        "abundance": 0.5069
+      },
+      {
+        "number": 81,
+        "mass": 80.9162897,
+        "abundance": 0.4931
+      }
+    ],
+    "average": 79.904,
+    "weightInterval": [
+      79.901,
+      79.907
+    ],
+    "mono": 78.9183376
+  },
+  "Kr": {
+    "isotopes": [
+      {
+        "number": 78,
+        "mass": 77.92036494,
+        "abundance": 0.00355
+      },
+      {
+        "number": 80,
+        "mass": 79.91637808,
+        "abundance": 0.02286
+      },
+      {
+        "number": 82,
+        "mass": 81.91348273,
+        "abundance": 0.11593
+      },
+      {
+        "number": 83,
+        "mass": 82.91412716,
+        "abundance": 0.115
+      },
+      {
+        "number": 84,
+        "mass": 83.9114977282,
+        "abundance": 0.56987
+      },
+      {
+        "number": 86,
+        "mass": 85.9106106269,
+        "abundance": 0.17279
+      }
+    ],
+    "average": 83.798,
+    "weightInterval": null,
+    "mono": 83.9114977282
+  },
+  "Rb": {
+    "isotopes": [
+      {
+        "number": 85,
+        "mass": 84.9117897379,
+        "abundance": 0.7217
+      },
+      {
+        "number": 87,
+        "mass": 86.909180531,
+        "abundance": 0.2783
+      }
+    ],
+    "average": 85.4678,
+    "weightInterval": null,
+    "mono": 84.9117897379
+  },
+  "Sr": {
+    "isotopes": [
+      {
+        "number": 84,
+        "mass": 83.9134191,
+        "abundance": 0.0056
+      },
+      {
+        "number": 86,
+        "mass": 85.9092606,
+        "abundance": 0.0986
+      },
+      {
+        "number": 87,
+        "mass": 86.9088775,
+        "abundance": 0.07
+      },
+      {
+        "number": 88,
+        "mass": 87.9056125,
+        "abundance": 0.8258
+      }
+    ],
+    "average": 87.62,
+    "weightInterval": null,
+    "mono": 87.9056125
+  },
+  "Y": {
+    "isotopes": [
+      {
+        "number": 89,
+        "mass": 88.9058403,
+        "abundance": 1
+      }
+    ],
+    "average": 88.90584,
+    "weightInterval": null,
+    "mono": 88.9058403
+  },
+  "Zr": {
+    "isotopes": [
+      {
+        "number": 90,
+        "mass": 89.9046977,
+        "abundance": 0.5145
+      },
+      {
+        "number": 91,
+        "mass": 90.9056396,
+        "abundance": 0.1122
+      },
+      {
+        "number": 92,
+        "mass": 91.9050347,
+        "abundance": 0.1715
+      },
+      {
+        "number": 94,
+        "mass": 93.9063108,
+        "abundance": 0.1738
+      },
+      {
+        "number": 96,
+        "mass": 95.9082714,
+        "abundance": 0.028
+      }
+    ],
+    "average": 91.224,
+    "weightInterval": null,
+    "mono": 89.9046977
+  },
+  "Nb": {
+    "isotopes": [
+      {
+        "number": 93,
+        "mass": 92.906373,
+        "abundance": 1
+      }
+    ],
+    "average": 92.90637,
+    "weightInterval": null,
+    "mono": 92.906373
+  },
+  "Mo": {
+    "isotopes": [
+      {
+        "number": 92,
+        "mass": 91.90680796,
+        "abundance": 0.1453
+      },
+      {
+        "number": 94,
+        "mass": 93.9050849,
+        "abundance": 0.0915
+      },
+      {
+        "number": 95,
+        "mass": 94.90583877,
+        "abundance": 0.1584
+      },
+      {
+        "number": 96,
+        "mass": 95.90467612,
+        "abundance": 0.1667
+      },
+      {
+        "number": 97,
+        "mass": 96.90601812,
+        "abundance": 0.096
+      },
+      {
+        "number": 98,
+        "mass": 97.90540482,
+        "abundance": 0.2439
+      },
+      {
+        "number": 100,
+        "mass": 99.9074718,
+        "abundance": 0.0982
+      }
+    ],
+    "average": 95.95,
+    "weightInterval": null,
+    "mono": 97.90540482
+  },
+  "Tc": {
+    "isotopes": [],
+    "average": null,
+    "weightInterval": null,
+    "mono": null
+  },
+  "Ru": {
+    "isotopes": [
+      {
+        "number": 96,
+        "mass": 95.90759025,
+        "abundance": 0.0554
+      },
+      {
+        "number": 98,
+        "mass": 97.9052868,
+        "abundance": 0.0187
+      },
+      {
+        "number": 99,
+        "mass": 98.9059341,
+        "abundance": 0.1276
+      },
+      {
+        "number": 100,
+        "mass": 99.9042143,
+        "abundance": 0.126
+      },
+      {
+        "number": 101,
+        "mass": 100.9055769,
+        "abundance": 0.1706
+      },
+      {
+        "number": 102,
+        "mass": 101.9043441,
+        "abundance": 0.3155
+      },
+      {
+        "number": 104,
+        "mass": 103.9054275,
+        "abundance": 0.1862
+      }
+    ],
+    "average": 101.07,
+    "weightInterval": null,
+    "mono": 101.9043441
+  },
+  "Rh": {
+    "isotopes": [
+      {
+        "number": 103,
+        "mass": 102.905498,
+        "abundance": 1
+      }
+    ],
+    "average": 102.9055,
+    "weightInterval": null,
+    "mono": 102.905498
+  },
+  "Pd": {
+    "isotopes": [
+      {
+        "number": 102,
+        "mass": 101.9056022,
+        "abundance": 0.0102
+      },
+      {
+        "number": 104,
+        "mass": 103.9040305,
+        "abundance": 0.1114
+      },
+      {
+        "number": 105,
+        "mass": 104.9050796,
+        "abundance": 0.2233
+      },
+      {
+        "number": 106,
+        "mass": 105.9034804,
+        "abundance": 0.2733
+      },
+      {
+        "number": 108,
+        "mass": 107.9038916,
+        "abundance": 0.2646
+      },
+      {
+        "number": 110,
+        "mass": 109.9051722,
+        "abundance": 0.1172
+      }
+    ],
+    "average": 106.42,
+    "weightInterval": null,
+    "mono": 105.9034804
+  },
+  "Ag": {
+    "isotopes": [
+      {
+        "number": 107,
+        "mass": 106.9050916,
+        "abundance": 0.51839
+      },
+      {
+        "number": 109,
+        "mass": 108.9047553,
+        "abundance": 0.48161
+      }
+    ],
+    "average": 107.8682,
+    "weightInterval": null,
+    "mono": 106.9050916
+  },
+  "Cd": {
+    "isotopes": [
+      {
+        "number": 106,
+        "mass": 105.9064599,
+        "abundance": 0.0125
+      },
+      {
+        "number": 108,
+        "mass": 107.9041834,
+        "abundance": 0.0089
+      },
+      {
+        "number": 110,
+        "mass": 109.90300661,
+        "abundance": 0.1249
+      },
+      {
+        "number": 111,
+        "mass": 110.90418287,
+        "abundance": 0.128
+      },
+      {
+        "number": 112,
+        "mass": 111.90276287,
+        "abundance": 0.2413
+      },
+      {
+        "number": 113,
+        "mass": 112.90440813,
+        "abundance": 0.1222
+      },
+      {
+        "number": 114,
+        "mass": 113.90336509,
+        "abundance": 0.2873
+      },
+      {
+        "number": 116,
+        "mass": 115.90476315,
+        "abundance": 0.0749
+      }
+    ],
+    "average": 112.414,
+    "weightInterval": null,
+    "mono": 113.90336509
+  },
+  "In": {
+    "isotopes": [
+      {
+        "number": 113,
+        "mass": 112.90406184,
+        "abundance": 0.0429
+      },
+      {
+        "number": 115,
+        "mass": 114.903878776,
+        "abundance": 0.9571
+      }
+    ],
+    "average": 114.818,
+    "weightInterval": null,
+    "mono": 114.903878776
+  },
+  "Sn": {
+    "isotopes": [
+      {
+        "number": 112,
+        "mass": 111.90482387,
+        "abundance": 0.0097
+      },
+      {
+        "number": 114,
+        "mass": 113.9027827,
+        "abundance": 0.0066
+      },
+      {
+        "number": 115,
+        "mass": 114.903344699,
+        "abundance": 0.0034
+      },
+      {
+        "number": 116,
+        "mass": 115.9017428,
+        "abundance": 0.1454
+      },
+      {
+        "number": 117,
+        "mass": 116.90295398,
+        "abundance": 0.0768
+      },
+      {
+        "number": 118,
+        "mass": 117.90160657,
+        "abundance": 0.2422
+      },
+      {
+        "number": 119,
+        "mass": 118.90331117,
+        "abundance": 0.0859
+      },
+      {
+        "number": 120,
+        "mass": 119.90220163,
+        "abundance": 0.3258
+      },
+      {
+        "number": 122,
+        "mass": 121.9034438,
+        "abundance": 0.0463
+      },
+      {
+        "number": 124,
+        "mass": 123.9052766,
+        "abundance": 0.0579
+      }
+    ],
+    "average": 118.71,
+    "weightInterval": null,
+    "mono": 119.90220163
+  },
+  "Sb": {
+    "isotopes": [
+      {
+        "number": 121,
+        "mass": 120.903812,
+        "abundance": 0.5721
+      },
+      {
+        "number": 123,
+        "mass": 122.9042132,
+        "abundance": 0.4279
+      }
+    ],
+    "average": 121.76,
+    "weightInterval": null,
+    "mono": 120.903812
+  },
+  "Te": {
+    "isotopes": [
+      {
+        "number": 120,
+        "mass": 119.9040593,
+        "abundance": 0.0009
+      },
+      {
+        "number": 122,
+        "mass": 121.9030435,
+        "abundance": 0.0255
+      },
+      {
+        "number": 123,
+        "mass": 122.9042698,
+        "abundance": 0.0089
+      },
+      {
+        "number": 124,
+        "mass": 123.9028171,
+        "abundance": 0.0474
+      },
+      {
+        "number": 125,
+        "mass": 124.9044299,
+        "abundance": 0.0707
+      },
+      {
+        "number": 126,
+        "mass": 125.9033109,
+        "abundance": 0.1884
+      },
+      {
+        "number": 128,
+        "mass": 127.90446128,
+        "abundance": 0.3174
+      },
+      {
+        "number": 130,
+        "mass": 129.906222748,
+        "abundance": 0.3408
+      }
+    ],
+    "average": 127.6,
+    "weightInterval": null,
+    "mono": 129.906222748
+  },
+  "I": {
+    "isotopes": [
+      {
+        "number": 127,
+        "mass": 126.9044719,
+        "abundance": 1
+      }
+    ],
+    "average": 126.90447,
+    "weightInterval": null,
+    "mono": 126.9044719
+  },
+  "Xe": {
+    "isotopes": [
+      {
+        "number": 124,
+        "mass": 123.905892,
+        "abundance": 0.000952
+      },
+      {
+        "number": 126,
+        "mass": 125.9042983,
+        "abundance": 0.00089
+      },
+      {
+        "number": 128,
+        "mass": 127.903531,
+        "abundance": 0.019102
+      },
+      {
+        "number": 129,
+        "mass": 128.9047808611,
+        "abundance": 0.264006
+      },
+      {
+        "number": 130,
+        "mass": 129.903509349,
+        "abundance": 0.04071
+      },
+      {
+        "number": 131,
+        "mass": 130.90508406,
+        "abundance": 0.212324
+      },
+      {
+        "number": 132,
+        "mass": 131.9041550856,
+        "abundance": 0.269086
+      },
+      {
+        "number": 134,
+        "mass": 133.90539466,
+        "abundance": 0.104357
+      },
+      {
+        "number": 136,
+        "mass": 135.907214484,
+        "abundance": 0.088573
+      }
+    ],
+    "average": 131.293,
+    "weightInterval": null,
+    "mono": 131.9041550856
+  },
+  "Cs": {
+    "isotopes": [
+      {
+        "number": 133,
+        "mass": 132.905451961,
+        "abundance": 1
+      }
+    ],
+    "average": 132.90545196,
+    "weightInterval": null,
+    "mono": 132.905451961
+  },
+  "Ba": {
+    "isotopes": [
+      {
+        "number": 130,
+        "mass": 129.9063207,
+        "abundance": 0.00106
+      },
+      {
+        "number": 132,
+        "mass": 131.9050611,
+        "abundance": 0.00101
+      },
+      {
+        "number": 134,
+        "mass": 133.90450818,
+        "abundance": 0.02417
+      },
+      {
+        "number": 135,
+        "mass": 134.90568838,
+        "abundance": 0.06592
+      },
+      {
+        "number": 136,
+        "mass": 135.90457573,
+        "abundance": 0.07854
+      },
+      {
+        "number": 137,
+        "mass": 136.90582714,
+        "abundance": 0.11232
+      },
+      {
+        "number": 138,
+        "mass": 137.905247,
+        "abundance": 0.71698
+      }
+    ],
+    "average": 137.327,
+    "weightInterval": null,
+    "mono": 137.905247
+  },
+  "La": {
+    "isotopes": [
+      {
+        "number": 138,
+        "mass": 137.9071149,
+        "abundance": 0.0008881
+      },
+      {
+        "number": 139,
+        "mass": 138.9063563,
+        "abundance": 0.9991119
+      }
+    ],
+    "average": 138.90547,
+    "weightInterval": null,
+    "mono": 138.9063563
+  },
+  "Ce": {
+    "isotopes": [
+      {
+        "number": 136,
+        "mass": 135.90712921,
+        "abundance": 0.00185
+      },
+      {
+        "number": 138,
+        "mass": 137.905991,
+        "abundance": 0.00251
+      },
+      {
+        "number": 140,
+        "mass": 139.9054431,
+        "abundance": 0.8845
+      },
+      {
+        "number": 142,
+        "mass": 141.9092504,
+        "abundance": 0.11114
+      }
+    ],
+    "average": 140.116,
+    "weightInterval": null,
+    "mono": 139.9054431
+  },
+  "Pr": {
+    "isotopes": [
+      {
+        "number": 141,
+        "mass": 140.9076576,
+        "abundance": 1
+      }
+    ],
+    "average": 140.90766,
+    "weightInterval": null,
+    "mono": 140.9076576
+  },
+  "Nd": {
+    "isotopes": [
+      {
+        "number": 142,
+        "mass": 141.907729,
+        "abundance": 0.27152
+      },
+      {
+        "number": 143,
+        "mass": 142.90982,
+        "abundance": 0.12174
+      },
+      {
+        "number": 144,
+        "mass": 143.910093,
+        "abundance": 0.23798
+      },
+      {
+        "number": 145,
+        "mass": 144.9125793,
+        "abundance": 0.08293
+      },
+      {
+        "number": 146,
+        "mass": 145.9131226,
+        "abundance": 0.17189
+      },
+      {
+        "number": 148,
+        "mass": 147.9168993,
+        "abundance": 0.05756
+      },
+      {
+        "number": 150,
+        "mass": 149.9209022,
+        "abundance": 0.05638
+      }
+    ],
+    "average": 144.242,
+    "weightInterval": null,
+    "mono": 141.907729
+  },
+  "Pm": {
+    "isotopes": [],
+    "average": null,
+    "weightInterval": null,
+    "mono": null
+  },
+  "Sm": {
+    "isotopes": [
+      {
+        "number": 144,
+        "mass": 143.9120065,
+        "abundance": 0.0307
+      },
+      {
+        "number": 147,
+        "mass": 146.9149044,
+        "abundance": 0.1499
+      },
+      {
+        "number": 148,
+        "mass": 147.9148292,
+        "abundance": 0.1124
+      },
+      {
+        "number": 149,
+        "mass": 148.9171921,
+        "abundance": 0.1382
+      },
+      {
+        "number": 150,
+        "mass": 149.9172829,
+        "abundance": 0.0738
+      },
+      {
+        "number": 152,
+        "mass": 151.9197397,
+        "abundance": 0.2675
+      },
+      {
+        "number": 154,
+        "mass": 153.9222169,
+        "abundance": 0.2275
+      }
+    ],
+    "average": 150.36,
+    "weightInterval": null,
+    "mono": 151.9197397
+  },
+  "Eu": {
+    "isotopes": [
+      {
+        "number": 151,
+        "mass": 150.9198578,
+        "abundance": 0.4781
+      },
+      {
+        "number": 153,
+        "mass": 152.921238,
+        "abundance": 0.5219
+      }
+    ],
+    "average": 151.964,
+    "weightInterval": null,
+    "mono": 152.921238
+  },
+  "Gd": {
+    "isotopes": [
+      {
+        "number": 152,
+        "mass": 151.9197995,
+        "abundance": 0.002
+      },
+      {
+        "number": 154,
+        "mass": 153.9208741,
+        "abundance": 0.0218
+      },
+      {
+        "number": 155,
+        "mass": 154.9226305,
+        "abundance": 0.148
+      },
+      {
+        "number": 156,
+        "mass": 155.9221312,
+        "abundance": 0.2047
+      },
+      {
+        "number": 157,
+        "mass": 156.9239686,
+        "abundance": 0.1565
+      },
+      {
+        "number": 158,
+        "mass": 157.9241123,
+        "abundance": 0.2484
+      },
+      {
+        "number": 160,
+        "mass": 159.9270624,
+        "abundance": 0.2186
+      }
+    ],
+    "average": 157.25,
+    "weightInterval": null,
+    "mono": 157.9241123
+  },
+  "Tb": {
+    "isotopes": [
+      {
+        "number": 159,
+        "mass": 158.9253547,
+        "abundance": 1
+      }
+    ],
+    "average": 158.92535,
+    "weightInterval": null,
+    "mono": 158.9253547
+  },
+  "Dy": {
+    "isotopes": [
+      {
+        "number": 156,
+        "mass": 155.9242847,
+        "abundance": 0.00056
+      },
+      {
+        "number": 158,
+        "mass": 157.9244159,
+        "abundance": 0.00095
+      },
+      {
+        "number": 160,
+        "mass": 159.9252046,
+        "abundance": 0.02329
+      },
+      {
+        "number": 161,
+        "mass": 160.9269405,
+        "abundance": 0.18889
+      },
+      {
+        "number": 162,
+        "mass": 161.9268056,
+        "abundance": 0.25475
+      },
+      {
+        "number": 163,
+        "mass": 162.9287383,
+        "abundance": 0.24896
+      },
+      {
+        "number": 164,
+        "mass": 163.9291819,
+        "abundance": 0.2826
+      }
+    ],
+    "average": 162.5,
+    "weightInterval": null,
+    "mono": 163.9291819
+  },
+  "Ho": {
+    "isotopes": [
+      {
+        "number": 165,
+        "mass": 164.9303288,
+        "abundance": 1
+      }
+    ],
+    "average": 164.93033,
+    "weightInterval": null,
+    "mono": 164.9303288
+  },
+  "Er": {
+    "isotopes": [
+      {
+        "number": 162,
+        "mass": 161.9287884,
+        "abundance": 0.00139
+      },
+      {
+        "number": 164,
+        "mass": 163.9292088,
+        "abundance": 0.01601
+      },
+      {
+        "number": 166,
+        "mass": 165.9302995,
+        "abundance": 0.33503
+      },
+      {
+        "number": 167,
+        "mass": 166.9320546,
+        "abundance": 0.22869
+      },
+      {
+        "number": 168,
+        "mass": 167.9323767,
+        "abundance": 0.26978
+      },
+      {
+        "number": 170,
+        "mass": 169.9354702,
+        "abundance": 0.1491
+      }
+    ],
+    "average": 167.259,
+    "weightInterval": null,
+    "mono": 165.9302995
+  },
+  "Tm": {
+    "isotopes": [
+      {
+        "number": 169,
+        "mass": 168.9342179,
+        "abundance": 1
+      }
+    ],
+    "average": 168.93422,
+    "weightInterval": null,
+    "mono": 168.9342179
+  },
+  "Yb": {
+    "isotopes": [
+      {
+        "number": 168,
+        "mass": 167.9338896,
+        "abundance": 0.00123
+      },
+      {
+        "number": 170,
+        "mass": 169.9347664,
+        "abundance": 0.02982
+      },
+      {
+        "number": 171,
+        "mass": 170.9363302,
+        "abundance": 0.1409
+      },
+      {
+        "number": 172,
+        "mass": 171.9363859,
+        "abundance": 0.2168
+      },
+      {
+        "number": 173,
+        "mass": 172.9382151,
+        "abundance": 0.16103
+      },
+      {
+        "number": 174,
+        "mass": 173.9388664,
+        "abundance": 0.32026
+      },
+      {
+        "number": 176,
+        "mass": 175.9425764,
+        "abundance": 0.12996
+      }
+    ],
+    "average": 173.054,
+    "weightInterval": null,
+    "mono": 173.9388664
+  },
+  "Lu": {
+    "isotopes": [
+      {
+        "number": 175,
+        "mass": 174.9407752,
+        "abundance": 0.97401
+      },
+      {
+        "number": 176,
+        "mass": 175.9426897,
+        "abundance": 0.02599
+      }
+    ],
+    "average": 174.9668,
+    "weightInterval": null,
+    "mono": 174.9407752
+  },
+  "Hf": {
+    "isotopes": [
+      {
+        "number": 174,
+        "mass": 173.9400461,
+        "abundance": 0.0016
+      },
+      {
+        "number": 176,
+        "mass": 175.9414076,
+        "abundance": 0.0526
+      },
+      {
+        "number": 177,
+        "mass": 176.9432277,
+        "abundance": 0.186
+      },
+      {
+        "number": 178,
+        "mass": 177.9437058,
+        "abundance": 0.2728
+      },
+      {
+        "number": 179,
+        "mass": 178.9458232,
+        "abundance": 0.1362
+      },
+      {
+        "number": 180,
+        "mass": 179.946557,
+        "abundance": 0.3508
+      }
+    ],
+    "average": 178.49,
+    "weightInterval": null,
+    "mono": 179.946557
+  },
+  "Ta": {
+    "isotopes": [
+      {
+        "number": 180,
+        "mass": 179.9474648,
+        "abundance": 0.0001201
+      },
+      {
+        "number": 181,
+        "mass": 180.9479958,
+        "abundance": 0.9998799
+      }
+    ],
+    "average": 180.94788,
+    "weightInterval": null,
+    "mono": 180.9479958
+  },
+  "W": {
+    "isotopes": [
+      {
+        "number": 180,
+        "mass": 179.9467108,
+        "abundance": 0.0012
+      },
+      {
+        "number": 182,
+        "mass": 181.94820394,
+        "abundance": 0.265
+      },
+      {
+        "number": 183,
+        "mass": 182.95022275,
+        "abundance": 0.1431
+      },
+      {
+        "number": 184,
+        "mass": 183.95093092,
+        "abundance": 0.3064
+      },
+      {
+        "number": 186,
+        "mass": 185.9543628,
+        "abundance": 0.2843
+      }
+    ],
+    "average": 183.84,
+    "weightInterval": null,
+    "mono": 183.95093092
+  },
+  "Re": {
+    "isotopes": [
+      {
+        "number": 185,
+        "mass": 184.9529545,
+        "abundance": 0.374
+      },
+      {
+        "number": 187,
+        "mass": 186.9557501,
+        "abundance": 0.626
+      }
+    ],
+    "average": 186.207,
+    "weightInterval": null,
+    "mono": 186.9557501
+  },
+  "Os": {
+    "isotopes": [
+      {
+        "number": 184,
+        "mass": 183.9524885,
+        "abundance": 0.0002
+      },
+      {
+        "number": 186,
+        "mass": 185.953835,
+        "abundance": 0.0159
+      },
+      {
+        "number": 187,
+        "mass": 186.9557474,
+        "abundance": 0.0196
+      },
+      {
+        "number": 188,
+        "mass": 187.9558352,
+        "abundance": 0.1324
+      },
+      {
+        "number": 189,
+        "mass": 188.9581442,
+        "abundance": 0.1615
+      },
+      {
+        "number": 190,
+        "mass": 189.9584437,
+        "abundance": 0.2626
+      },
+      {
+        "number": 192,
+        "mass": 191.961477,
+        "abundance": 0.4078
+      }
+    ],
+    "average": 190.23,
+    "weightInterval": null,
+    "mono": 191.961477
+  },
+  "Ir": {
+    "isotopes": [
+      {
+        "number": 191,
+        "mass": 190.9605893,
+        "abundance": 0.373
+      },
+      {
+        "number": 193,
+        "mass": 192.9629216,
+        "abundance": 0.627
+      }
+    ],
+    "average": 192.217,
+    "weightInterval": null,
+    "mono": 192.9629216
+  },
+  "Pt": {
+    "isotopes": [
+      {
+        "number": 190,
+        "mass": 189.9599297,
+        "abundance": 0.00012
+      },
+      {
+        "number": 192,
+        "mass": 191.9610387,
+        "abundance": 0.00782
+      },
+      {
+        "number": 194,
+        "mass": 193.9626809,
+        "abundance": 0.3286
+      },
+      {
+        "number": 195,
+        "mass": 194.9647917,
+        "abundance": 0.3378
+      },
+      {
+        "number": 196,
+        "mass": 195.96495209,
+        "abundance": 0.2521
+      },
+      {
+        "number": 198,
+        "mass": 197.9678949,
+        "abundance": 0.07356
+      }
+    ],
+    "average": 195.084,
+    "weightInterval": null,
+    "mono": 194.9647917
+  },
+  "Au": {
+    "isotopes": [
+      {
+        "number": 197,
+        "mass": 196.96656879,
+        "abundance": 1
+      }
+    ],
+    "average": 196.966569,
+    "weightInterval": null,
+    "mono": 196.96656879
+  },
+  "Hg": {
+    "isotopes": [
+      {
+        "number": 196,
+        "mass": 195.9658326,
+        "abundance": 0.0015
+      },
+      {
+        "number": 198,
+        "mass": 197.9667686,
+        "abundance": 0.0997
+      },
+      {
+        "number": 199,
+        "mass": 198.96828064,
+        "abundance": 0.1687
+      },
+      {
+        "number": 200,
+        "mass": 199.96832659,
+        "abundance": 0.231
+      },
+      {
+        "number": 201,
+        "mass": 200.97030284,
+        "abundance": 0.1318
+      },
+      {
+        "number": 202,
+        "mass": 201.9706434,
+        "abundance": 0.2986
+      },
+      {
+        "number": 204,
+        "mass": 203.97349398,
+        "abundance": 0.0687
+      }
+    ],
+    "average": 200.592,
+    "weightInterval": null,
+    "mono": 201.9706434
+  },
+  "Tl": {
+    "isotopes": [
+      {
+        "number": 203,
+        "mass": 202.9723446,
+        "abundance": 0.2952
+      },
+      {
+        "number": 205,
+        "mass": 204.9744278,
+        "abundance": 0.7048
+      }
+    ],
+    "average": 204.3835,
+    "weightInterval": [
+      204.382,
+      204.385
+    ],
+    "mono": 204.9744278
+  },
+  "Pb": {
+    "isotopes": [
+      {
+        "number": 204,
+        "mass": 203.973044,
+        "abundance": 0.014
+      },
+      {
+        "number": 206,
+        "mass": 205.9744657,
+        "abundance": 0.241
+      },
+      {
+        "number": 207,
+        "mass": 206.9758973,
+        "abundance": 0.221
+      },
+      {
+        "number": 208,
+        "mass": 207.9766525,
+        "abundance": 0.524
+      }
+    ],
+    "average": 207.2,
+    "weightInterval": null,
+    "mono": 207.9766525
+  },
+  "Bi": {
+    "isotopes": [
+      {
+        "number": 209,
+        "mass": 208.9803991,
+        "abundance": 1
+      }
+    ],
+    "average": 208.9804,
+    "weightInterval": null,
+    "mono": 208.9803991
+  },
+  "Po": {
+    "isotopes": [],
+    "average": null,
+    "weightInterval": null,
+    "mono": null
+  },
+  "At": {
+    "isotopes": [],
+    "average": null,
+    "weightInterval": null,
+    "mono": null
+  },
+  "Rn": {
+    "isotopes": [],
+    "average": null,
+    "weightInterval": null,
+    "mono": null
+  },
+  "Fr": {
+    "isotopes": [],
+    "average": null,
+    "weightInterval": null,
+    "mono": null
+  },
+  "Ra": {
+    "isotopes": [],
+    "average": null,
+    "weightInterval": null,
+    "mono": null
+  },
+  "Ac": {
+    "isotopes": [],
+    "average": null,
+    "weightInterval": null,
+    "mono": null
+  },
+  "Th": {
+    "isotopes": [
+      {
+        "number": 232,
+        "mass": 232.0380558,
+        "abundance": 1
+      }
+    ],
+    "average": 232.0377,
+    "weightInterval": null,
+    "mono": 232.0380558
+  },
+  "Pa": {
+    "isotopes": [
+      {
+        "number": 231,
+        "mass": 231.0358842,
+        "abundance": 1
+      }
+    ],
+    "average": 231.03588,
+    "weightInterval": null,
+    "mono": 231.0358842
+  },
+  "U": {
+    "isotopes": [
+      {
+        "number": 234,
+        "mass": 234.0409523,
+        "abundance": 0.000054
+      },
+      {
+        "number": 235,
+        "mass": 235.0439301,
+        "abundance": 0.007204
+      },
+      {
+        "number": 238,
+        "mass": 238.0507884,
+        "abundance": 0.992742
+      }
+    ],
+    "average": 238.02891,
+    "weightInterval": null,
+    "mono": 238.0507884
+  },
+  "Np": {
+    "isotopes": [],
+    "average": null,
+    "weightInterval": null,
+    "mono": null
+  },
+  "Pu": {
+    "isotopes": [],
+    "average": null,
+    "weightInterval": null,
+    "mono": null
+  },
+  "Am": {
+    "isotopes": [],
+    "average": null,
+    "weightInterval": null,
+    "mono": null
+  },
+  "Cm": {
+    "isotopes": [],
+    "average": null,
+    "weightInterval": null,
+    "mono": null
+  },
+  "Bk": {
+    "isotopes": [],
+    "average": null,
+    "weightInterval": null,
+    "mono": null
+  },
+  "Cf": {
+    "isotopes": [],
+    "average": null,
+    "weightInterval": null,
+    "mono": null
+  },
+  "Es": {
+    "isotopes": [],
+    "average": null,
+    "weightInterval": null,
+    "mono": null
+  },
+  "Fm": {
+    "isotopes": [],
+    "average": null,
+    "weightInterval": null,
+    "mono": null
+  },
+  "Md": {
+    "isotopes": [],
+    "average": null,
+    "weightInterval": null,
+    "mono": null
+  },
+  "No": {
+    "isotopes": [],
+    "average": null,
+    "weightInterval": null,
+    "mono": null
+  },
+  "Lr": {
+    "isotopes": [],
+    "average": null,
+    "weightInterval": null,
+    "mono": null
+  },
+  "Rf": {
+    "isotopes": [],
+    "average": null,
+    "weightInterval": null,
+    "mono": null
+  },
+  "Db": {
+    "isotopes": [],
+    "average": null,
+    "weightInterval": null,
+    "mono": null
+  },
+  "Sg": {
+    "isotopes": [],
+    "average": null,
+    "weightInterval": null,
+    "mono": null
+  },
+  "Bh": {
+    "isotopes": [],
+    "average": null,
+    "weightInterval": null,
+    "mono": null
+  },
+  "Hs": {
+    "isotopes": [],
+    "average": null,
+    "weightInterval": null,
+    "mono": null
+  },
+  "Mt": {
+    "isotopes": [],
+    "average": null,
+    "weightInterval": null,
+    "mono": null
+  },
+  "Ds": {
+    "isotopes": [],
+    "average": null,
+    "weightInterval": null,
+    "mono": null
+  },
+  "Rg": {
+    "isotopes": [],
+    "average": null,
+    "weightInterval": null,
+    "mono": null
+  },
+  "Cn": {
+    "isotopes": [],
+    "average": null,
+    "weightInterval": null,
+    "mono": null
+  },
+  "Nh": {
+    "isotopes": [],
+    "average": null,
+    "weightInterval": null,
+    "mono": null
+  },
+  "Fl": {
+    "isotopes": [],
+    "average": null,
+    "weightInterval": null,
+    "mono": null
+  },
+  "Mc": {
+    "isotopes": [],
+    "average": null,
+    "weightInterval": null,
+    "mono": null
+  },
+  "Lv": {
+    "isotopes": [],
+    "average": null,
+    "weightInterval": null,
+    "mono": null
+  },
+  "Ts": {
+    "isotopes": [],
+    "average": null,
+    "weightInterval": null,
+    "mono": null
+  },
+  "Og": {
+    "isotopes": [],
+    "average": null,
+    "weightInterval": null,
+    "mono": null
+  }
+};
+
+const def=(id,name,add,remove={},charge=1,multiplier=1,enabled=false)=>({id,name,add,remove,charge,multiplier,enabled,loss:Object.keys(remove).length>0});
+const ADDUCTS=[def('H','[M+H]+',{H:1},{},1,1,true),def('Na','[M+Na]+',{Na:1},{},1,1,true),def('NH4','[M+NH4]+',{N:1,H:4},{},1,1,true),def('K','[M+K]+',{K:1},{},1,1,true),def('2H','[M+2H]2+',{H:2},{},2),def('3H','[M+3H]3+',{H:3},{},3),def('dH','[2M+H]+',{H:1},{},1,2),def('dNa','[2M+Na]+',{Na:1},{},1,2),def('ACN','[M+CH3CN+H]+',{C:2,H:4,N:1}),def('MeOH','[M+CH3OH+H]+',{C:1,H:5,O:1}),def('water','[M+H-H2O]+',{H:1},{H:2,O:1}),def('ammonia','[M+H-NH3]+',{H:1},{N:1,H:3})];
+// Deprotonation is not a neutral fragmentation loss. Only water loss is flagged.
+const NEGATIVE_ADDUCTS=[
+ {...def('negH','[M-H]-',{}, {H:1},-1,1,true),loss:false},
+ def('Cl','[M+Cl]-',{Cl:1},{},-1,1,true),
+ def('formate','[M+CHO2]-',{C:1,H:1,O:2},{},-1,1,true),
+ def('acetate','[M+C2H3O2]-',{C:2,H:3,O:2},{},-1,1,true),
+ {...def('neg2H','[M-2H]2-',{}, {H:2},-2),loss:false},
+ {...def('neg3H','[M-3H]3-',{}, {H:3},-3),loss:false},
+ {...def('negDimer','[2M-H]-',{}, {H:1},-1,2),loss:false},
+ {...def('negNa','[M+Na-2H]-',{Na:1},{H:2},-1),loss:false},
+ def('negWater','[M-H-H2O]-',{}, {H:3,O:1},-1)
+];
+
+
+function parseFormula(input){
+ const s=String(input).trim(); if(!s||s.length>500)throw Error('Enter a formula of 1–500 characters.');let i=0;
+ const count=()=>{const start=i;while(/\d/.test(s[i]||'x'))i++;if(start===i)return 1;const n=Number(s.slice(start,i));if(!Number.isSafeInteger(n)||n<1||n>10000)throw Error('Counts must be integers from 1 to 10,000.');return n;};
+ function group(depth){if(depth>12)throw Error('Parentheses are nested too deeply.');const out={};let terms=0;while(i<s.length&&s[i]!==')'){let part;if(s[i]==='('){i++;part=group(depth+1);if(s[i]!==')')throw Error('Missing closing parenthesis.');i++;}else{const m=s.slice(i).match(/^[A-Z][a-z]?/);if(!m)throw Error(`Unexpected “${s[i]}” at position ${i+1}. Use neutral formulas only.`);i+=m[0].length;if(!ELEMENTS[m[0]])throw Error(`Unknown element: ${m[0]}.`);part={[m[0]]:1};}const n=count();for(const [e,c] of Object.entries(part))out[e]=(out[e]||0)+c*n;terms++;if(Object.values(out).reduce((a,b)=>a+b,0)>10000)throw Error('Maximum 10,000 atoms per molecule.');}if(!terms)throw Error('Empty formula or parentheses.');return out;}
+ const result=group(0);if(i!==s.length)throw Error('Unexpected closing parenthesis.');return result;
+}
+function hill(c){const keys=Object.keys(c).filter(k=>c[k]>0).sort();if(c.C){keys.splice(keys.indexOf('C'),1);if(c.H)keys.splice(keys.indexOf('H'),1);keys.unshift(...(c.H?['C','H']:['C']));}return keys.map(k=>k+(c[k]===1?'':c[k])).join('');}
+
+
+function masses(c){let mono=0,average=0;const warnings=[];for(const [e,n] of Object.entries(c)){const d=ELEMENTS[e];if(d.mono===null){mono=null;warnings.push(`${e}: no defined natural isotope composition; exact mass unavailable.`);}else if(mono!==null)mono+=d.mono*n;if(d.average===null)average=null;else if(average!==null)average+=d.average*n;}return {mono,average,atoms:Object.values(c).reduce((a,b)=>a+b,0),dbe:Object.keys(c).every(e=>['C','H','N','O','S','F','Cl','Br','I'].includes(e))?1+(c.C||0)+(c.N||0)/2-((c.H||0)+(c.F||0)+(c.Cl||0)+(c.Br||0)+(c.I||0))/2:null,warnings};}
+function windowFor(mz,tolerance=5,unit='ppm'){if(!Number.isFinite(mz)||mz<=0||!Number.isFinite(tolerance)||tolerance<0||!['ppm','Da'].includes(unit))throw Error('Use a positive m/z and a non-negative finite tolerance.');const delta=unit==='ppm'?mz*tolerance/1e6:tolerance;return {lower:mz-delta,upper:mz+delta,delta};}
+function matchMass(observed,theoretical,tolerance,unit){if(!Number.isFinite(observed)||observed<=0)throw Error('Observed m/z must be positive.');const w=windowFor(theoretical,tolerance,unit);return {ppm:(observed-theoretical)/theoretical*1e6,within:Math.abs(observed-theoretical)<=w.delta+1e-12};}
+
+
+function ionFor(c,a){const composition={};for(const [e,n] of Object.entries(c))composition[e]=n*a.multiplier;for(const [e,n] of Object.entries(a.add))composition[e]=(composition[e]||0)+n;for(const [e,n] of Object.entries(a.remove)){composition[e]=(composition[e]||0)-n;if(composition[e]<0)throw Error(`Insufficient ${e} for ${a.name}.`);if(!composition[e])delete composition[e];}const mass=masses(composition).mono;if(mass===null)throw Error('Ion mass unavailable for this composition.');return {composition,mz:(mass-a.charge*ELECTRON_MASS)/Math.abs(a.charge),charge:a.charge,adduct:a};}
+
+
+// Exact isotope-count enumeration per element, then bounded convolution.
+function isotopePattern(composition,charge=1){
+ if(Object.values(composition).reduce((a,b)=>a+b,0)>600)throw Error('Isotope preview limited to 600 ion atoms; mass calculations remain available.');
+ let operations=0;
+ let peaks=[{mass:0,p:1,nominal:0}];let base=0;const limit=4096;
+ for(const [symbol,n] of Object.entries(composition)){
+ const iso=ELEMENTS[symbol].isotopes;if(!iso.length)throw Error(`No natural isotope distribution for ${symbol}.`);
+ const ref=iso.reduce((a,b)=>a.abundance>b.abundance?a:b);base+=ref.mass*n;
+ const sum=iso.reduce((a,b)=>a+b.abundance,0);let states=new Map([['0'.repeat(0),{counts:Array(iso.length).fill(0),p:1}]]);
+ for(let atom=0;atom<n;atom++){const next=new Map();for(const v of states.values())for(let j=0;j<iso.length;j++){if(++operations>2000000)throw Error('Isotope composition exceeds the two-million-operation preview budget. Mass calculations remain available.');const counts=v.counts.slice();counts[j]++;const key=counts.join(',');const p=v.p*iso[j].abundance/sum;if(next.has(key))next.get(key).p+=p;else next.set(key,{counts,p});}states=new Map([...next].filter(([,v])=>v.p>1e-16).sort((a,b)=>b[1].p-a[1].p).slice(0,limit));}
+ const ep=[...states.values()].map(v=>({p:v.p,mass:v.counts.reduce((a,k,j)=>a+k*iso[j].mass,0),nominal:v.counts.reduce((a,k,j)=>a+k*(iso[j].number-ref.number),0)}));
+ // Keep work bounded even for elements with many stable isotopes.
+ const next=[];for(const a of peaks)for(const b of ep){if(++operations>2000000)throw Error('Isotope composition exceeds the two-million-operation preview budget. Mass calculations remain available.');const p=a.p*b.p;if(p>1e-14)next.push({mass:a.mass+b.mass,p,nominal:a.nominal+b.nominal});if(next.length>=250000){next.sort((a,b)=>b.p-a.p);next.length=limit;}}
+ peaks=next.sort((a,b)=>b.p-a.p).slice(0,limit);
+ }
+ const retained=peaks.reduce((a,b)=>a+b.p,0),max=Math.max(...peaks.map(p=>p.p));
+ const groups=[0,1,2].map(n=>{const ps=peaks.filter(p=>p.nominal===n),p=ps.reduce((a,b)=>a+b.p,0);return {nominal:n,p,mz:p? (ps.reduce((a,b)=>a+b.mass*b.p,0)/p-charge*ELECTRON_MASS)/Math.abs(charge):null};});
+ return {peaks:peaks.map(p=>({...p,mz:(p.mass-charge*ELECTRON_MASS)/Math.abs(charge),relative:p.p/max*100,shift:(p.mass-base)/Math.abs(charge)})).sort((a,b)=>a.mz-b.mz),groups,retained,base:(base-charge*ELECTRON_MASS)/Math.abs(charge)};
+}
+
+
+
+
+function parseCSV(text, delimiter) {
+  if (new TextEncoder().encode(text).length > 2*1024*1024) throw Error('Maximum input size is 2 MiB.');
+  text=text.replace(/^\uFEFF/,'');
+  if (!delimiter) {
+    let inside=false; delimiter=',';
+    for(let j=0;j<text.length;j++) {
+      if(text[j]==='"') { if(inside&&text[j+1]==='"'){j++;continue;} inside=!inside; }
+      if(!inside&&text[j]==='\t'){delimiter='\t';break;}
+      if(!inside&&(text[j]==='\n'||text[j]==='\r'))break;
+    }
+  }
+  const rows=[]; let row=[],field='',quoted=false,closed=false,error='',columns=0;
+  const append=c=>{if(field.length<4096)field+=c;else error='Field exceeds the 4,096-character limit.';};
+  const push=()=>{columns++;if(columns<=32)row.push(field);else error='Record exceeds the 32-column limit.';field='';closed=false;};
+  const end=()=>{push();if(error||row.some(x=>x.trim())){if(rows.length>=2001)throw Error('Maximum 2,000 rows per import (plus optional header).');rows.push({fields:row,error,line:rows.length+1});}row=[];columns=0;error='';};
+  for(let i=0;i<text.length;i++) {
+    const c=text[i];
+    if(quoted){if(c==='"'){if(text[i+1]==='"'){append('"');i++;}else{quoted=false;closed=true;}}else append(c);}
+    else if(c==='"'&&!field&&!closed)quoted=true;
+    else if(c===delimiter)push();
+    else if(c==='\n'||c==='\r'){if(c==='\r'&&text[i+1]==='\n')i++;end();}
+    else {if(closed||c==='"')error='Malformed quoted field.';append(c);}
+  }
+  if(quoted)error='Unclosed quoted field.';
+  if(field||row.length||columns||error)end();
+  return rows;
+}
+function importCompounds(text,requireHeader=false) {
+  const rows=parseCSV(text);
+  const header=rows[0]?.fields.map(x=>x.trim().toLowerCase());
+  const hasHeader=header?.[0]==='name'&&header?.[1]==='formula';
+  if(hasHeader&&(header.length!==2||rows[0].error))throw Error('Expected valid Name,Formula headers.');
+  if(requireHeader&&!hasHeader)throw Error('CSV must begin with Name,Formula headers.');
+  if(hasHeader)rows.shift();
+  if(rows.length>2000)throw Error('Maximum 2,000 rows per import.');
+  const valid=[],invalid=[];
+  for(const row of rows){try{
+    if(row.error)throw Error(row.error);
+    if(row.fields.length!==2)throw Error('Expected exactly two fields: Name,Formula.');
+    const [name,formula]=row.fields.map(x=>x.trim());
+    if(!name||name.length>300)throw Error('Name must contain 1–300 characters.');
+    const composition=parseFormula(formula);
+    valid.push({name,formula:hill(composition),composition,...masses(composition)});
+  }catch(e){invalid.push({row:row.line,name:row.fields[0]||'',formula:row.fields[1]||'',error:e.message});}}
+  return {valid,invalid};
+}
+function safeCell(value) {
+  const s=value==null?'':String(value);
+  if(typeof value==='number')return s;
+  // Normalise only for detection; preserve the original scientific/name text.
+  const probe=s.normalize('NFKC').replace(/^[\s\p{Cc}\p{Cf}]*/u,'');
+  return /^[=+\-@]/.test(probe)||/^[\p{Cc}\p{Cf}]/u.test(s)?"'"+s:s;
+}
+function csv(rows,delimiter=',') {
+  return rows.map(r=>r.map(v=>{
+    const s=safeCell(v);
+    return /["\r\n,;\t]/.test(s)?'"'+s.replaceAll('"','""')+'"':s;
+  }).join(delimiter)).join('\r\n');
+}
+
+
+function skylineRows(ions){return [['Molecule List Name','Precursor Name','Precursor Formula','Precursor Adduct','Precursor Charge','Precursor m/z'],...ions.map(i=>['Offline Mass Calculator '+i.compound.id,i.compound.name,i.compound.formula,i.adduct.name,i.charge,i.mz])];}
+function skylineCSV(ions){return csv(skylineRows(ions));}
+
+
+function calculate(compounds,adducts,tolerance,unit){const ions=[],errors=[];for(const compound of compounds)for(const adduct of adducts){try{const ion=ionFor(compound.composition,adduct);ions.push({...ion,compound,...windowFor(ion.mz,tolerance,unit)});}catch(e){errors.push({compound:compound.id,adduct:adduct.name,error:e.message});}}return {ions,errors};}
+function summaryRows(compounds,adducts,ions){const lookup=new Map(ions.map(i=>[`${i.compound.id}:${i.adduct.id}`,i.mz]));return [['Compound ID','Name','Formula','Neutral monoisotopic mass (Da)','Average mass (Da)',...adducts.map(a=>a.name)],...compounds.map(c=>[c.id,c.name,c.formula,c.mono,c.average,...adducts.map(a=>lookup.get(`${c.id}:${a.id}`)??'')])];}
+function ionRows(ions,tolerance,unit){return [['Compound ID','Name','Formula','Adduct','Charge','Neutral monoisotopic mass (Da)','Theoretical m/z','Tolerance','Tolerance unit','Lower XIC m/z','Upper XIC m/z'],...ions.map(i=>[i.compound.id,i.compound.name,i.compound.formula,i.adduct.name,i.charge,i.compound.mono,i.mz,tolerance,unit,i.lower,i.upper])];}
+
+
+
+// Each polarity has independent definitions, presets and saved UI choices.
+const ION_MODES = {
+  positive: {
+    available: true,
+    definitions: ADDUCTS,
+    presets: {
+      common: ADDUCTS.filter(a => a.enabled).map(a => a.id),
+      protonated: ['H'],
+      all: ADDUCTS.map(a => a.id),
+    },
+    groups: [
+      ['Common adducts', ['H', 'Na', 'NH4', 'K']],
+      ['Multiply charged ions', ['2H', '3H']],
+      ['Multimers', ['dH', 'dNa']],
+      ['Solvent clusters', ['ACN', 'MeOH']],
+      ['Neutral-loss candidates', ['water', 'ammonia']],
+    ],
+  },
+  negative: {available: true, definitions: NEGATIVE_ADDUCTS, presets: {common: NEGATIVE_ADDUCTS.filter(a=>a.enabled).map(a=>a.id), protonated:['negH'], all:NEGATIVE_ADDUCTS.map(a=>a.id)}, groups:[['Common negative ions',['negH','Cl','formate','acetate']],['Multiply charged ions',['neg2H','neg3H']],['Multimers',['negDimer']],['Metal exchange',['negNa']],['Neutral-loss candidates',['negWater']]]},
+};
+
+
+
+const $=id=>document.getElementById(id);let compounds=[],ions=[],invalidRows=[],pending=null,nextId=1,view='summary',page=0,selected=null,cache=new Map();const PAGE=40;let acceptedTolerance=5,acceptedUnit='ppm';
+let polarity='positive',ionMode=ION_MODES.positive;
+const modeState={};
+let importGeneration=0;
+let customSelection=[...ionMode.presets.common];
+const selectedAdducts=()=>ionMode.definitions.filter(a=>$('a_'+a.id).checked);const precision=()=>+$('precision').value;const fmt=n=>n==null?'Unavailable':n.toFixed(precision());const tolerance=()=>+$('tolerance').value;const unit=()=>$('unit').value;
+function el(tag,text,cls){const x=document.createElement(tag);if(text!==undefined)x.textContent=text;if(cls)x.className=cls;return x;}
+function status(s){$('status').textContent=s;}
+function table(target,headers,rows,selectable=false){target.replaceChildren();if(!rows.length){target.append(el('p','No results yet. Add a compound or import a list.','hint'));return;}const numericColumns=headers.map((h,index)=>!['Compound ID','Record'].includes(h)&&(rows.some(row=>typeof row.values[index]==='number')||/mass|m\/z|^\[/.test(h)));const t=el('table'),head=el('thead'),hr=el('tr');headers.forEach((h,index)=>{const th=el('th',h,numericColumns[index]?'number':'');th.scope='col';hr.append(th);});head.append(hr);t.append(head);const body=el('tbody');for(const {values,id} of rows){const tr=el('tr');if(id===selected)tr.className='selected';values.forEach((v,index)=>{const td=el('td',undefined,numericColumns[index]?'number':'');if(selectable&&index===0){const b=el('button',String(v));b.onclick=()=>{selected=id;$('detail').open=true;renderResults();renderDetail();};b.title='Inspect compound '+id;td.append(b);}else td.textContent=typeof v==='number'?(/^(Compound ID|Charge|Record)$/.test(headers[index])?String(v):fmt(v)):v??'—';tr.append(td);});body.append(tr);}t.append(body);target.append(t);}
+// Build the advanced ion controls once; collapsing never destroys their state.
+function buildIonControls() {
+$('adducts').replaceChildren();
+for (const [title, ids] of ionMode.groups) {
+  const group = el('fieldset');
+  group.append(el('legend', title));
+  for (const id of ids) {
+    const a = ionMode.definitions.find(item => item.id === id);
+    const label = el('label'), box = el('input');
+    box.type = 'checkbox';
+    box.id = 'a_' + a.id;
+    box.checked = a.enabled;
+    box.onchange = () => {
+      customSelection = selectedAdducts().map(item => item.id);
+      $('ionPreset').value = 'custom';
+      recalculate();
+    };
+    label.append(box, document.createTextNode(a.name));
+    group.append(label);
+  }
+  $('adducts').append(group);
+}
+}
+buildIonControls();
+function switchPolarity(next) {
+  if(next===polarity)return;
+  modeState[polarity]={custom:[...customSelection],selected:selectedAdducts().map(a=>a.id),preset:$('ionPreset').value};
+  polarity=next;ionMode=ION_MODES[next];
+  const saved=modeState[next];
+  customSelection=saved?.custom||[...ionMode.presets.common];
+  buildIonControls();
+  const ids=saved?.selected||ionMode.presets.common;
+  for(const a of ionMode.definitions)$('a_'+a.id).checked=ids.includes(a.id);
+  $('ionPreset').options[0].text=next==='positive'?'Common positive ESI':'Common negative ESI';
+  $('ionPreset').options[1].text=next==='positive'?'Protonated only':'Deprotonated only';
+  $('ionPreset').value=saved?.preset||'common';
+  for(const mode of ['positive','negative']){
+    $(mode).setAttribute('aria-pressed',String(mode===next));
+    $(mode).classList.toggle('active',mode===next);
+  }
+  $('ionFilter').value='';
+  recalculate();
+}
+$('positive').onclick=()=>switchPolarity('positive');
+$('negative').onclick=()=>switchPolarity('negative');
+function setCustomPanel(open) {
+  $('customIons').hidden = !open;
+  $('customise').setAttribute('aria-expanded', String(open));
+}
+function settingsSummary() {
+  $('settingsSummary').textContent = `· ${tolerance()} ${unit()} · ${precision()} decimals`;
+  const selectedIons = selectedAdducts();
+  $('ionSummary').textContent = selectedIons.length <= 4
+    ? selectedIons.map(a => a.name).join(' · ') || 'No ions selected'
+    : `${selectedIons.length} ions selected`;
+}
+$('customise').onclick = () => setCustomPanel($('customIons').hidden);
+$('ionPreset').onchange = () => {
+  const preset = $('ionPreset').value;
+  const ids = preset === 'custom' ? customSelection : ionMode.presets[preset];
+  for (const a of ionMode.definitions) $('a_' + a.id).checked = ids.includes(a.id);
+  if (preset === 'custom') setCustomPanel(true);
+  recalculate();
+};
+function recalculate(){try{if($('tolerance').value.trim()===''||!Number.isFinite(tolerance())||tolerance()<0||tolerance()>1e6)throw Error('Tolerance must be between 0 and 1,000,000.');$('settingsError').textContent='';acceptedTolerance=tolerance();acceptedUnit=unit();const result=calculate(compounds,selectedAdducts(),tolerance(),unit());ions=result.ions;$('ionErrors').textContent=result.errors.length?`${result.errors.length} ion calculations unavailable. `+result.errors.slice(0,4).map(e=>`Compound ${e.compound}: ${e.error}`).join(' '):'';const filter=$('ionFilter').value;$('ionFilter').replaceChildren(new Option('All selected ions',''));for(const a of selectedAdducts())$('ionFilter').add(new Option(a.name,a.id));$('ionFilter').value=selectedAdducts().some(a=>a.id===filter)?filter:'';page=0;$('counts').textContent=compounds.length+(compounds.length===1?' compound':' compounds');$('ionCount').textContent=ions.length+' calculated ions';settingsSummary();renderResults();renderDetail();}catch(e){$('tolerance').value=String(acceptedTolerance);$('unit').value=acceptedUnit;$('settingsError').textContent=e.message;settingsSummary();}}
+function showMetrics(target, compound) {
+  target.replaceChildren();
+  for (const [label, value] of [
+    ['Formula', compound.formula],
+    ['Monoisotopic mass · Da', fmt(compound.mono)],
+    ['Average mass · Da', fmt(compound.average)],
+    ['Atoms', compound.atoms],
+    ['DBE', compound.dbe ?? 'Not applicable'],
+  ]) {
+    const metric = el('div', undefined, 'metric');
+    metric.append(el('span', label), el('strong', value));
+    target.append(metric);
+  }
+  if (compound.warnings.length) target.append(el('p', compound.warnings.join(' '), 'hint'));
+}
+function renderResults() {
+  const single = compounds.length === 1;
+  $('resultsSection').hidden = !compounds.length;
+  $('detail').hidden = !compounds.length;
+  $('batchToolbar').hidden = compounds.length < 2;
+  $('singleInfo').hidden = !single;
+  $('ionFilterLabel').hidden = view !== 'ions';
+  $('invalid').hidden = !invalidRows.length;
+  $('noIons').hidden = selectedAdducts().length > 0;
+  $('summaryTab').classList.toggle('active', view === 'summary');
+  $('ionsTab').classList.toggle('active', view === 'ions');
+  $('summaryTab').setAttribute('aria-pressed', String(view === 'summary'));
+  $('ionsTab').setAttribute('aria-pressed', String(view === 'ions'));
+  $('resultsHeading').textContent = single ? 'Mass Calculations · '+compounds[0].name : 'Mass Calculations';
+  if (!compounds.length) return;
+  if (single) showMetrics($('singleInfo'), compounds[0]);
+
+  const query = single ? '' : $('search').value.toLowerCase();
+  let cs = compounds.filter(c => `${c.id} ${c.name} ${c.formula}`.toLowerCase().includes(query));
+  if ($('sort').value === 'name') cs.sort((a, b) => a.name.localeCompare(b.name));
+  if ($('sort').value === 'mass') cs.sort((a, b) => (a.mono ?? Infinity) - (b.mono ?? Infinity));
+  const ids = new Set(cs.map(c => c.id));
+  const rank = new Map(cs.map((c, i) => [c.id, i]));
+  const filtered = ions.filter(i => ids.has(i.compound.id) &&
+    (single || !$('ionFilter').value || i.adduct.id === $('ionFilter').value))
+    .sort((a, b) => rank.get(a.compound.id) - rank.get(b.compound.id));
+  let rows, headers;
+  if (single) {
+    headers = ['Ion form', 'Charge', 'Theoretical m/z', `Lower XIC · ±${tolerance()} ${unit()}`, 'Upper XIC'];
+    rows = filtered.map(i => ({values: [i.adduct.name + (i.adduct.loss ? ' · possible loss' : ''), i.charge, i.mz, i.lower, i.upper]}));
+  } else {
+    const data = view === 'summary'
+      ? summaryRows(cs, selectedAdducts(), ions)
+      : ionRows(filtered, tolerance(), unit());
+    headers = data[0];
+    rows = data.slice(1).map((values, j) => ({
+      id: view === 'summary' ? cs[j].id : filtered[j].compound.id, values,
+    }));
+  }
+  const pages = Math.max(1, Math.ceil(rows.length / PAGE));
+  page = Math.min(page, pages - 1);
+  table($('results'), headers, rows.slice(page * PAGE, (page + 1) * PAGE), !single);
+  if (!rows.length) $('results').replaceChildren(el('p',
+    !selectedAdducts().length ? 'Neutral masses remain available above or in the compound summary.' : 'No matching results. Clear the search or ion filter.', 'hint'));
+  $('pagination').hidden = pages <= 1;
+  $('page').textContent = `Page ${page + 1} of ${pages} · ${rows.length} rows`;
+  $('previous').disabled = page === 0;
+  $('next').disabled = page >= pages - 1;
+}
+function renderDetail(){if(!compounds.some(c=>c.id===selected))selected=compounds[0]?.id??null;$('compoundSelect').replaceChildren();for(const c of compounds)$('compoundSelect').add(new Option(`${c.id} · ${c.name}`,c.id));$('compoundSelect').value=selected??'';const c=compounds.find(c=>c.id===selected);if(!c){$('detailInfo').textContent='Select a compound to inspect its composition and isotope pattern.';$('detailIon').replaceChildren();$('spectrum').replaceChildren();$('isotopeTable').replaceChildren();$('match').textContent='';$('isotopeNote').textContent='';return;}
+ showMetrics($('detailInfo'),c);$('detailInfo').hidden=compounds.length===1;$('compoundLabel').hidden=compounds.length===1;$('detailName').textContent='· '+c.name;const old=$('detailIon').value;$('detailIon').replaceChildren();for(const i of ions.filter(i=>i.compound.id===selected))$('detailIon').add(new Option(`${i.adduct.name} · ${fmt(i.mz)} m/z`,i.adduct.id));if([...$('detailIon').options].some(o=>o.value===old))$('detailIon').value=old;if($('detail').open)renderSpectrum();}
+function currentIon(){return ions.find(i=>i.compound.id===selected&&i.adduct.id===$('detailIon').value);}
+function matching() {
+  const ion = currentIon();
+  const output = $('match');
+  output.className = 'comparison';
+  $('observed').setAttribute('aria-invalid', 'false');
+  if (!ion) {
+    output.textContent = 'Select an available ion to compare an observed m/z.';
+    return;
+  }
+  const target = `${ion.compound.name} · ${ion.adduct.name} · theoretical ${fmt(ion.mz)} m/z`;
+  const raw = $('observed').value.trim();
+  if (!raw && !$('observed').validity?.badInput) {
+    output.textContent = `${target}. Enter an observed m/z to compare (±${tolerance()} ${unit()}).`;
+    return;
+  }
+  try {
+    const observed = Number(raw);
+    const result = matchMass(observed, ion.mz, tolerance(), unit());
+    const heading = el('strong', `${result.within ? 'Within' : 'Outside'} tolerance · ${result.ppm >= 0 ? '+' : ''}${result.ppm.toFixed(3)} ppm`);
+    const values = el('span', `Observed ${raw} m/z → ${target}.`);
+    const delta = observed - ion.mz;
+    const explanation = el('span', `Difference ${delta >= 0 ? '+' : ''}${delta.toFixed(8)} m/z · tolerance ±${tolerance()} ${unit()}. Mass agreement is not identification.`, 'hint');
+    output.replaceChildren(heading, values, explanation);
+    output.className = 'comparison ' + (result.within ? 'ok' : 'error');
+  } catch (error) {
+    output.textContent = error.message;
+    output.className = 'comparison error';
+    $('observed').setAttribute('aria-invalid', 'true');
+  }
+}
+function renderSpectrum(){matching();$('spectrum').replaceChildren();$('isotopeTable').replaceChildren();const i=currentIon();if(!i){$('isotopeNote').textContent='Select an available ion to calculate its isotope distribution.';return;}try{const key=hill(i.composition)+':'+i.charge;let p=cache.get(key);if(!p){p=isotopePattern(i.composition,i.charge);if(cache.size>=60)cache.delete(cache.keys().next().value);cache.set(key,p);}const nominal=$('representation').value==='nominal';const gm=Math.max(...p.groups.map(x=>x.p));const peaks=nominal?p.groups.filter(x=>x.p>0).map(x=>({...x,relative:x.p/gm*100,shift:x.mz-p.base})):p.peaks.filter(x=>x.relative>=.01).sort((a,b)=>b.p-a.p).slice(0,100).sort((a,b)=>a.mz-b.mz);
+ $('isotopeNote').textContent=`Ion composition ${hill(i.composition)} · reference monoisotopic m/z ${fmt(p.base)}. Strongest retained fine-structure peak ${fmt(p.peaks.reduce((a,b)=>a.p>b.p?a:b).mz)} m/z. Retained probability ${(p.retained*100).toFixed(6)}%. ${nominal?'Nominal groups use probability-weighted centroids; intensities scaled within M–M+2.':'Up to 100 sticks ≥0.01% relative abundance; fine structure may overlap visually.'} Bounded, pruned natural-abundance model; no instrumental peak broadening. ${i.adduct.loss?'Neutral loss is a possibility, not a predicted fragment.':''}`;
+ const ns='http://www.w3.org/2000/svg';const svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox','0 0 1000 280');svg.setAttribute('role','img');svg.setAttribute('aria-label','Theoretical isotope spectrum. Peak values are also listed in the table below.');const add=(tag,attrs,text)=>{const e=document.createElementNS(ns,tag);for(const [k,v] of Object.entries(attrs))e.setAttribute(k,v);if(text)e.textContent=text;svg.append(e);return e;};const lo=Math.min(...peaks.map(x=>x.mz))-.15,hi=Math.max(...peaks.map(x=>x.mz))+.15;add('line',{x1:65,y1:230,x2:965,y2:230});add('line',{x1:65,y1:25,x2:65,y2:230});for(const v of [0,50,100])add('text',{x:20,y:232-v*1.9},String(v));for(let n=0;n<=5;n++){const mz=lo+(hi-lo)*n/5;add('text',{x:65+n*180,y:253,'text-anchor':'middle'},mz.toFixed(3));}add('text',{x:500,y:275},'m/z');add('text',{x:70,y:18},'Relative abundance (%)');peaks.forEach((pk,n)=>{const x=65+(pk.mz-lo)/(hi-lo)*900;const stick=add('line',{x1:x,y1:230,x2:x,y2:230-pk.relative*1.9,'stroke-width':nominal?4:2,tabindex:0});const title=document.createElementNS(ns,'title');title.textContent=`${fmt(pk.mz)} m/z · ${pk.relative.toFixed(4)}% relative · Δ ${pk.shift.toFixed(8)} m/z`;stick.append(title);if(pk.relative>15)add('text',{x,y:220-pk.relative*1.9,'text-anchor':'middle'},nominal?'M'+(pk.nominal?'+'+pk.nominal:''):pk.mz.toFixed(4));});$('spectrum').append(svg);table($('isotopeTable'),['Isotope group','m/z','Shift in m/z','Relative abundance (%)','Absolute probability'],peaks.map(pk=>({values:[pk.nominal===0?'M':`M${pk.nominal>0?'+':''}${pk.nominal}`,pk.mz,pk.shift,pk.relative,pk.p]})));
+ }catch(e){$('isotopeNote').textContent=e.message;}}
+function append(data,replace=false){if((replace?0:compounds.length)+data.valid.length>2000)throw Error('Maximum 2,000 compounds in the workspace.');if(replace){compounds=[];selected=null;}for(const c of data.valid)compounds.push({...c,id:nextId++});invalidRows=data.invalid;recalculate();}
+function preview(text,header=false){importGeneration++;pending=null;$('preview').hidden=true;try{pending=importCompounds(text,header);$('preview').hidden=false;$('previewCount').textContent=`${pending.valid.length} valid compounds · ${pending.invalid.length} invalid rows. Preview shows first 20 of each.`;table($('previewTable'),['Name','Formula','Result'],[...pending.valid.slice(0,20).map(c=>({values:[c.name,c.formula,c.warnings.join(' ')||'Valid']})),...pending.invalid.slice(0,20).map(c=>({values:[c.name,c.formula,c.error]}))]);$('apply').disabled=!pending.valid.length;invalidRows=pending.invalid;$('previewInvalid').hidden=!invalidRows.length;$('invalid').hidden=!invalidRows.length;status('Review the import before applying it.');}catch(e){status(e.message);}}
+// Manual calculation reuses an identical entry; batch imports intentionally keep duplicates.
+$('single').onsubmit = e => {
+  e.preventDefault();
+  $('nameError').textContent = '';
+  $('formulaError').textContent = '';
+  $('name').setAttribute('aria-invalid', 'false');
+  $('formula').setAttribute('aria-invalid', 'false');
+  const formula = $('formula').value.trim();
+  const name = $('name').value.trim() || 'Formula';
+  try {
+    if (!formula) throw Error('Enter a molecular formula, for example C8H10N4O2.');
+    if (name.length > 300 && $('name').value.trim()) {
+      $('nameError').textContent = 'Use a name of at most 300 characters.';
+      $('name').setAttribute('aria-invalid', 'true');
+      $('name').focus({preventScroll: true});
+      return;
+    }
+    const data = importCompounds([name || 'Formula', formula]
+      .map(v => '"' + v.replaceAll('"', '""') + '"').join(','));
+    if (data.invalid.length) throw Error(data.invalid[0].error);
+    const c = data.valid[0];
+    if (!$('name').value.trim()) c.name = c.formula;
+    const existing = compounds.find(item => item.name === c.name && item.formula === c.formula);
+    $('search').value = '';
+    $('ionFilter').value = '';
+    if (existing) {
+      selected = existing.id;
+      renderResults();
+      renderDetail();
+      status('Showing the existing compound; no duplicate added.');
+    } else {
+      selected = nextId;
+      append(data);
+      status(`Calculated ${c.name}.`);
+    }
+  } catch (error) {
+    $('formulaError').textContent = error.message;
+    $('formula').setAttribute('aria-invalid', 'true');
+    $('formula').focus({preventScroll: true});
+  }
+};
+$('samples').onclick=()=>{append(importCompounds('Caffeine,C8H10N4O2\nGlucose,C6H12O6\nCitric acid,C6H8O7\nChlorobenzene,C6H5Cl\nBromobenzene,C6H5Br\nMethionine,C5H11NO2S\nGlucose 6-phosphate,C6H13O9P'));status('Added 7 example compounds.');};
+$('toggleBatch').onclick = () => {
+  const open = $('paste').hidden;
+  $('paste').hidden = !open;
+  $('toggleBatch').setAttribute('aria-expanded', String(open));
+  if (open) $('batch').focus({preventScroll: true});
+};
+$('importCSV').onclick = () => $('upload').click();
+$('detail').ontoggle = () => { if ($('detail').open) renderDetail(); };
+$('previewPaste').onclick=()=>preview($('batch').value);$('upload').onchange=async()=>{
+  const generation=++importGeneration;
+  pending=null;$('preview').hidden=true;
+  const f=$('upload').files[0];$('upload').value='';if(!f)return;
+  if(f.size>2*1024*1024){status('File exceeds the 2 MiB limit.');return;}
+  try{const text=await f.text();if(generation!==importGeneration)return;preview(text,true);}
+  catch(e){if(generation===importGeneration)status(e.message);}
+};$('apply').onclick=()=>{if(!pending)return;try{$('search').value='';$('ionFilter').value='';view='summary';append(pending,$('importMode').value==='replace');$('preview').hidden=true;$('paste').hidden=true;$('toggleBatch').setAttribute('aria-expanded','false');$('resultsHeading').focus({preventScroll:true});status(`Imported ${pending.valid.length} compounds; ${pending.invalid.length} invalid rows skipped.`);pending=null;}catch(e){status(e.message);}};$('cancel').onclick=()=>{importGeneration++;$('preview').hidden=true;pending=null;$('importCSV').focus({preventScroll:true});};
+for(const id of ['tolerance','unit'])$(id).onchange=recalculate;$('precision').onchange=()=>{settingsSummary();renderResults();renderDetail();};for(const id of ['search','sort','ionFilter'])$(id).oninput=()=>{page=0;renderResults();};$('summaryTab').onclick=()=>{view='summary';page=0;$('summaryTab').classList.add('active');$('ionsTab').classList.remove('active');renderResults();};$('ionsTab').onclick=()=>{view='ions';page=0;$('ionsTab').classList.add('active');$('summaryTab').classList.remove('active');renderResults();};$('previous').onclick=()=>{page--;renderResults();};$('next').onclick=()=>{page++;renderResults();};$('compoundSelect').onchange=()=>{selected=+$('compoundSelect').value;renderDetail();renderResults();};$('detailIon').onchange=renderSpectrum;$('representation').onchange=renderSpectrum;$('observed').oninput=matching;$('observed').onchange=matching;$('observed').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();matching();}};$('theme').onclick=()=>document.body.classList.toggle('dark');
+function download(name,text,type='text/csv;charset=utf-8'){const url=URL.createObjectURL(new Blob([text],{type}));const a=el('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+const sr=()=>summaryRows(compounds,selectedAdducts(),ions),ir=()=>ionRows(ions,tolerance(),unit());$('downloadSummary').onclick=()=>download('offline-mass-calculator-summary.csv',csv(sr()));$('downloadIons').onclick=()=>download('offline-mass-calculator-ions.csv',csv(ir()));$('skyline').onclick=()=>{download('offline-mass-calculator-Skyline.csv',skylineCSV(ions));status('Skyline export is work in progress. Verify all imported targets before use. See README for column mapping and precursor-only import workflow. Desktop Skyline import has not been tested.');};$('previewInvalid').onclick=$('invalid').onclick=()=>download('offline-mass-calculator-invalid.csv',csv([['Record','Name','Formula','Error'],...invalidRows.map(r=>[r.row,r.name,r.formula,r.error])]));$('metadata').onclick=()=>download('offline-mass-calculator-metadata.json',JSON.stringify({engine:APP_VERSION,polarity,reference:REFERENCE_VERSION,created:new Date().toISOString(),adducts:selectedAdducts(),tolerance:tolerance(),unit:unit(),precision:precision(),compoundCount:compounds.length,ionCount:ions.length,averageConvention:'NIST standard atomic weight; interval midpoint when interval supplied',isotopes:'Natural-abundance bounded convolution; 4096 states, preview <=600 atoms'},null,2),'application/json');
+async function copy(rows){const text=csv(rows,'\t');try{await navigator.clipboard.writeText(text);status('Complete table copied.');}catch{const ta=el('textarea');ta.value=text;document.body.append(ta);ta.select();const ok=document.execCommand('copy');ta.remove();status(ok?'Complete table copied.':'Clipboard unavailable in this browser. Download CSV instead.');}}$('copySummary').onclick=()=>copy(sr());$('copyIons').onclick=()=>copy(ir());recalculate();
+
+// Reset the calculation workspace, preserving polarity, presets and preferences.
+$('clearAll').onclick = () => {
+  importGeneration++;
+  compounds = []; ions = []; invalidRows = []; pending = null;
+  nextId = 1; selected = null; page = 0; view = 'summary'; cache.clear();
+  for (const id of ['name','formula','batch','upload','observed','search']) $(id).value = '';
+  for (const id of ['nameError','formulaError','settingsError','previewCount','detailName','page']) $(id).textContent = '';
+  for (const id of ['name','formula','observed']) $(id).setAttribute('aria-invalid','false');
+  for (const id of ['results','singleInfo','previewTable']) $(id).replaceChildren();
+  for (const id of ['preview','paste','previewInvalid','invalid','pagination']) $(id).hidden = true;
+  $('toggleBatch').setAttribute('aria-expanded','false');
+  $('detail').open = false;
+  $('apply').disabled = true;
+  $('sort').value = 'input'; $('importMode').value = 'append'; $('ionFilter').value = '';
+  // Discard any unfinished invalid tolerance edit, retaining the last valid setting.
+  $('tolerance').value = String(acceptedTolerance); $('unit').value = acceptedUnit;
+  recalculate();
+  status('All compounds and results cleared. Ion settings retained.');
+  $('formula').focus({preventScroll:true});
+};
+
+let helpPinned = false, helpHovered = false, helpFocused = false;
+function showHelp(open) {
+  $('quickHelp').hidden = !open;
+  $('helpButton').setAttribute('aria-expanded',String(open));
+}
+$('helpWrap').onmouseenter = () => { helpHovered = true; showHelp(true); };
+$('helpWrap').onmouseleave = () => { helpHovered = false; showHelp(helpPinned || helpFocused); };
+$('helpButton').onfocus = () => { helpFocused = true; showHelp(true); };
+$('helpButton').onblur = () => { helpFocused = false; helpPinned = false; showHelp(helpHovered); };
+$('helpButton').onclick = () => { helpPinned = !helpPinned; showHelp(helpPinned); };
+$('helpWrap').onkeydown = e => {
+  if (e.key === 'Escape') { helpPinned = false; showHelp(false); e.preventDefault(); }
+};
+</script>
+</body>
+</html>

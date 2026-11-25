@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'none'; style-src 'none'; img-src data:; connect-src 'none'; font-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Offline Mass Calculator</title>
+  <style>/* STYLES */</style>
+</head>
+<body>
+<header>
+  <div><h1>Offline Mass Calculator</h1><p><em>Small-molecule, ion and isotope calculations.</em></p></div>
+  <div class="header-actions">
+    <div id="helpWrap" class="help-wrap">
+      <button id="helpButton" class="quiet" aria-expanded="false" aria-controls="quickHelp">Help</button>
+      <div id="quickHelp" class="quick-help" hidden>
+        <strong>Quick start</strong>
+        <ol><li>Enter a formula, then Calculate. Names are optional.</li><li>Use Paste batch or Import CSV for a list.</li><li>Choose ESI + or ESI − and an ion preset.</li><li>Open Advanced settings for tolerance and decimals.</li><li>Inspect isotopes or enter observed m/z below results.</li><li>Export before Clear all or closing the page.</li></ol>
+        <p>Clear all removes entries and results; your ion settings stay.</p>
+      </div>
+    </div>
+    <div class="polarity" role="group" aria-label="ESI polarity">
+      <button id="positive" class="active" aria-pressed="true">ESI +</button>
+      <button id="negative" aria-pressed="false">ESI −</button>
+    </div>
+    
+    <button id="theme" class="quiet" aria-label="Toggle dark theme">◐ Theme</button>
+  </div>
+</header>
+<main>
+  <section class="workspace" aria-labelledby="inputHeading">
+    <div class="input-title"><h2 id="inputHeading" class="input-heading">Compound input</h2><button id="clearAll" class="quiet" title="Remove all compounds, drafts and results. Keep ion settings.">Clear all</button></div>
+    <form id="single" novalidate>
+      <label>Compound name <span class="optional">optional</span><input id="name" placeholder="e.g. Caffeine" maxlength="300" aria-describedby="nameError"><span id="nameError" class="field-error" aria-live="polite"></span></label>
+      <label>Molecular formula<input id="formula" placeholder="e.g. C8H10N4O2" required maxlength="500" spellcheck="false" autocapitalize="off" autocomplete="off" aria-describedby="formulaError"><span id="formulaError" class="field-error" aria-live="polite"></span></label>
+      <button class="primary" type="submit">Calculate</button>
+    </form>
+    <div class="entry-actions">
+      <button id="toggleBatch" class="quiet" aria-expanded="false" aria-controls="paste">Paste batch</button>
+      <button id="importCSV" class="quiet" aria-describedby="csvHint">Import CSV</button>
+      <input id="upload" type="file" accept=".csv,text/csv" hidden aria-label="Import local CSV">
+      <span id="csvHint" class="hint">Name,Formula · max 2 MiB</span>
+      <button id="samples" class="quiet">Load examples</button>
+    </div>
+    <div id="paste" class="disclosure-body" hidden>
+      <label>Paste Name and Formula columns<textarea id="batch" rows="4" placeholder="Name&#9;Formula&#10;Caffeine&#9;C8H10N4O2&#10;Glucose&#9;C6H12O6" aria-describedby="batchHint"></textarea></label>
+      <div class="inline-actions"><button id="previewPaste">Preview import</button><span id="batchHint" class="hint">Excel/Sheets columns or CSV. Optional header; duplicates are preserved.</span></div>
+    </div>
+    <div id="preview" class="disclosure-body" hidden>
+      <h2>Import preview</h2><p id="previewCount"></p><div id="previewTable" class="table-wrap"></div>
+      <div class="inline-actions"><label>Apply as<select id="importMode"><option value="append">Append to current compounds</option><option value="replace">Replace current compounds</option></select></label><button id="apply" class="primary">Apply valid rows</button><button id="cancel">Cancel</button><button id="previewInvalid" hidden>Download invalid rows</button></div>
+    </div>
+    <p id="status" role="status" aria-live="polite"></p>
+    <div class="ion-bar">
+      <label class="inline-label">Ion selection<select id="ionPreset"><option value="common">Common positive ESI</option><option value="protonated">Protonated only</option><option value="all">All available ions</option><option value="custom">Custom</option></select></label>
+      <span id="ionSummary" class="hint" aria-live="polite"></span>
+      <button id="customise" class="quiet" aria-expanded="false" aria-controls="customIons">Customise ions</button>
+    </div>
+    <div id="customIons" class="disclosure-body" hidden>
+      <div id="adducts" class="ion-groups"></div>
+      <p class="hint">Neutral-loss candidates are possible compositions, not predicted fragments. Calculated ions may not be observable.</p>
+    </div>
+    <details id="advanced">
+      <summary>Advanced settings <span id="settingsSummary">· 5 ppm · 5 decimals</span></summary>
+      <div class="settings disclosure-body">
+        <label>XIC tolerance ±<input id="tolerance" type="number" min="0" max="1000000" step="any" value="5" aria-describedby="settingsError"></label>
+        <label>Unit<select id="unit"><option>ppm</option><option>Da</option></select></label>
+        <label>Display decimals<select id="precision"><option>4</option><option selected>5</option><option>6</option><option>7</option><option>8</option></select></label>
+        <p id="settingsError" class="field-error" role="status"></p>
+      </div>
+    </details>
+  </section>
+
+  <section id="resultsSection" class="results-section" hidden aria-label="Calculated results">
+    <div class="section-head"><h2 id="resultsHeading" tabindex="-1">Mass Calculations</h2><span><span id="counts">0 compounds</span> · <span id="ionCount">0 calculated ions</span></span></div>
+    <div id="singleInfo" class="metrics" hidden></div>
+    <div id="batchToolbar" class="toolbar" hidden>
+      <div class="tabs" role="group" aria-label="Results view"><button id="summaryTab" class="active" aria-pressed="true">Compound summary</button><button id="ionsTab" aria-pressed="false">Expanded ions</button></div>
+      <label>Search compounds<input id="search" type="search" placeholder="Name, formula or ID"></label>
+      <label id="ionFilterLabel" hidden>Ion filter<select id="ionFilter"><option value="">All selected ions</option></select></label>
+      <label>Sort<select id="sort"><option value="input">Input order</option><option value="name">Name A–Z</option><option value="mass">Neutral mass ↑</option></select></label>
+    </div>
+    <p id="noIons" class="hint" hidden>No ions selected. Choose a preset or customise ions above.</p>
+    <div id="results" class="table-wrap"></div>
+    <div id="pagination" class="pagination" hidden><button id="previous">← Previous</button><span id="page"></span><button id="next">Next →</button></div>
+    <p id="ionErrors" class="hint"></p>
+    <div class="exports" role="group" aria-label="Export complete results"><span class="hint">Export all</span><button id="downloadSummary">Summary CSV</button><button id="downloadIons">Ion-list CSV</button><button id="skyline">Skyline targets (work in progress)</button><button id="copySummary">Copy summary</button><button id="copyIons">Copy ions</button><button id="invalid" hidden>Invalid-row report</button><button id="metadata">Metadata JSON</button></div>
+  </section>
+
+  <details id="detail" class="detail-section" hidden>
+    <summary>Inspect isotopes &amp; observed m/z <span id="detailName"></span></summary>
+    <div class="detail-body">
+      <label id="compoundLabel">Compound<select id="compoundSelect"></select></label>
+      <div id="detailInfo" class="metrics"></div>
+      <div class="settings"><label>Selected ion<select id="detailIon"></select></label><label>Isotope representation<select id="representation"><option value="exact">Exact-mass fine structure</option><option value="nominal">Nominal M / M+1 / M+2</option></select></label><label>Observed m/z<input id="observed" type="number" min="0" step="any" placeholder="e.g. 203.05261" aria-describedby="match"></label></div>
+      <div id="match" class="comparison" role="status" aria-live="polite" aria-atomic="true"></div><div id="spectrum"></div><p id="isotopeNote" class="hint"></p>
+      <details class="peak-details"><summary>Isotope peak values</summary><div id="isotopeTable" class="table-wrap"></div></details>
+    </div>
+  </details>
+  <footer>Local calculations · No data transmission<br>Average masses use NIST standard weights (interval midpoints where applicable). Mass agreement alone does not establish chemical identity.</footer>
+</main>
+<script type="module">/* SCRIPT */</script>
+</body>
+</html>

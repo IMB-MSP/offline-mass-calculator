@@ -1,0 +1,94 @@
+[
+  {
+    "id": "negH",
+    "composition": {
+      "C": 6,
+      "H": 11,
+      "O": 6
+    },
+    "charge": -1,
+    "expected": "179.056111651859065"
+  },
+  {
+    "id": "Cl",
+    "composition": {
+      "C": 6,
+      "H": 12,
+      "O": 6,
+      "Cl": 1
+    },
+    "charge": -1,
+    "expected": "215.032789366089065"
+  },
+  {
+    "id": "formate",
+    "composition": {
+      "C": 7,
+      "H": 13,
+      "O": 8
+    },
+    "charge": -1,
+    "expected": "225.061590955459065"
+  },
+  {
+    "id": "acetate",
+    "composition": {
+      "C": 8,
+      "H": 15,
+      "O": 8
+    },
+    "charge": -1,
+    "expected": "239.077241019919065"
+  },
+  {
+    "id": "neg2H",
+    "composition": {
+      "C": 6,
+      "H": 10,
+      "O": 6
+    },
+    "charge": -2,
+    "expected": "89.024417599769065"
+  },
+  {
+    "id": "neg3H",
+    "composition": {
+      "C": 6,
+      "H": 9,
+      "O": 6
+    },
+    "charge": -3,
+    "expected": "59.013852915739065"
+  },
+  {
+    "id": "negDimer",
+    "composition": {
+      "C": 12,
+      "H": 23,
+      "O": 12
+    },
+    "charge": -1,
+    "expected": "359.119499756039065"
+  },
+  {
+    "id": "negNa",
+    "composition": {
+      "C": 6,
+      "H": 10,
+      "O": 6,
+      "Na": 1
+    },
+    "charge": -1,
+    "expected": "201.038055901629065"
+  },
+  {
+    "id": "negWater",
+    "composition": {
+      "C": 6,
+      "H": 9,
+      "O": 5
+    },
+    "charge": -1,
+    "expected": "161.045546967829065"
+  }
+]
